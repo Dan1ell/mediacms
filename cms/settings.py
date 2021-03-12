@@ -5,7 +5,7 @@ DEBUG = False
 
 # PORTAL NAME, this is the portal title and
 # is also shown on several places as emails
-PORTAL_NAME = "MediaCMS"
+PORTAL_NAME = "Sightings"
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Europe/London"
 
