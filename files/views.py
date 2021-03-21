@@ -150,7 +150,7 @@ Sender email: %s\n
                 reply_to=[from_email],
             )
             email.send(fail_silently=True)
-            success_msg = "Message was sent! Thanks for contacting"
+            success_msg = "Your message was sent!"
             context["success_msg"] = success_msg
 
     return render(request, "cms/contact.html", context)
