@@ -11,6 +11,8 @@ static/debug_toolbar/
 static/mptt/
 static/rest_framework/
 cms/local_settings.py
+deploy/docker/local_settings.py
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos
