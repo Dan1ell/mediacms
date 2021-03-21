@@ -34,13 +34,3 @@ MP4HLS_COMMAND = (
 )
 
 DEBUG = False
-
-# email settings
-DEFAULT_FROM_EMAIL = "contact@sightings.live"
-EMAIL_HOST_PASSWORD = "&-4~gt&+iYd}"
-EMAIL_HOST_USER = "sightings"
-EMAIL_USE_TLS = True
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_HOST = "smtp.webfaction.com"
-EMAIL_PORT = 587
-ADMIN_EMAIL_LIST = ["sightingslive@gmail.com"]
