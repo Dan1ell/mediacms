@@ -47,3 +47,4 @@ Temporary Items
 .apdisk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
+deploy/docker/local_settings.py
