@@ -36,7 +36,6 @@ MP4HLS_COMMAND = (
 DEBUG = False
 
 # email settings
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "contact@sightings.live"
 EMAIL_HOST_PASSWORD = "&-4~gt&+iYd}"
 EMAIL_HOST_USER = "sightings"
