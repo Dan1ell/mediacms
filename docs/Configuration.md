@@ -2,7 +2,11 @@
 
 A number of options are available on `cms/settings.py`. 
 
-It is advisable to override any of them by adding it to `cms/local_settings.py` . 
+It is advisable to override any of them by adding it to `local_settings.py` . 
+
+In case of a the single server installation, add to `cms/local_settings.py` .
+
+In case of a docker compose installation, add to `deploy/docker/local_settings.py` . This will automatically overwrite `cms/local_settings.py` .
 
 Any change needs restart of MediaCMS in order to take effect. So edit `cms/local_settings.py`, make a change and restart MediaCMS 
 
@@ -92,6 +96,14 @@ Make changes (True/False) to any of the following:
 - CAN_DISLIKE_MEDIA = True  # whether the dislike media appears
 - CAN_REPORT_MEDIA = True  # whether the report media appears
 - CAN_SHARE_MEDIA = True  # whether the share media appears
+```
+
+### show/hide the download option on a media
+
+Edit `templates/config/installation/features.html` and set 
+
+```
+download: false
 ```
 
 ### automatically hide media upon being reported

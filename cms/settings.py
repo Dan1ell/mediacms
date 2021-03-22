@@ -42,7 +42,11 @@ ALLOW_RATINGS_CONFIRMED_EMAIL_ONLY = True
 
 # ip of the server should be part of this
 ALLOWED_HOSTS = ["*", "mediacms.io", "127.0.0.1", "localhost"]
+
 FRONTEND_HOST = "http://localhost"
+# this variable - along with SSL_FRONTEND_HOST is used on several places
+# as email where a URL need appear etc
+
 # FRONTEND_HOST needs an http prefix - at the end of the file
 # there's a conversion to https with the SSL_FRONTEND_HOST env
 INTERNAL_IPS = "127.0.0.1"
@@ -209,7 +213,7 @@ CANNOT_ADD_MEDIA_MESSAGE = ""
 
 # mp4hls command, part of Bendo4
 MP4HLS_COMMAND = (
-    "/home/mediacms.io/mediacms/Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4hls"
+    "/home/mediacms.io/mediacms/Bento4-SDK-1-6-0-637.x86_64-unknown-linux/bin/mp4hls"
 )
 
 # highly experimental, related with remote workers
