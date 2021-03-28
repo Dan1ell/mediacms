@@ -46,7 +46,7 @@ services:
   celery_worker:
     image: mediacms/mediacms:latest
     deploy:
-      replicas: 1
+      replicas: 2
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
