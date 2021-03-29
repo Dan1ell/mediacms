@@ -1,0 +1,90 @@
+[
+{
+    "model": "files.language",
+    "pk": 1,
+    "fields": {
+        "code": "eng",
+        "title": "English"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 2,
+    "fields": {
+        "code": "spa",
+        "title": "Español"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 3,
+    "fields": {
+        "code": "fra",
+        "title": "Français"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 4,
+    "fields": {
+        "code": "por",
+        "title": "Português"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 5,
+    "fields": {
+        "code": "nld",
+        "title": "Nederlands"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 6,
+    "fields": {
+        "code": "ara",
+        "title": "العربية"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 7,
+    "fields": {
+        "code": "swa",
+        "title": "Kiswahili"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 8,
+    "fields": {
+        "code": "zho",
+        "title": "中文"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 9,
+    "fields": {
+        "code": "rus",
+        "title": "русский язык"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 10,
+    "fields": {
+        "code": "hin",
+        "title": "हिन्दी, हिंदी"
+    }
+},
+{
+    "model": "files.language",
+    "pk": 11,
+    "fields": {
+        "code": "jpn",
+        "title": "日本語"
+    }
+}
+]

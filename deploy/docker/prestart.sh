@@ -6,7 +6,9 @@ ADMIN_PASSWORD=${ADMIN_PASSWORD:-$RANDOM_ADMIN_PASS}
 if [ X"$ENABLE_MIGRATIONS" = X"yes" ]; then
     python manage.py migrate
     python manage.py loaddata fixtures/encoding_profiles.json
-    python manage.py loaddata fixtures/categories.json
+    python manage.py loaddata fixtures/sightings-categories.json
+    python manage.py loaddata fixtures/sightings-tags.json
+    python manage.py loaddata fixtures/sightings-languages.json
     python manage.py collectstatic --noinput
 
     echo "Admin Password: $ADMIN_PASSWORD"

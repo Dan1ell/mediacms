@@ -1,0 +1,92 @@
+[
+{
+    "model": "files.category",
+    "pk": 8,
+    "fields": {
+        "uid": "d4bbf536-0d57-457a-badb-df44b5a243cb",
+        "add_date": "2021-03-29T07:39:53.114Z",
+        "title": "Evidence",
+        "description": "UFO/UAP videos, pictures, FAA audio, flight logs, radar logs, etc.",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.category",
+    "pk": 9,
+    "fields": {
+        "uid": "2684e265-6686-4782-abf8-adc01aa9345c",
+        "add_date": "2021-03-29T07:41:12.443Z",
+        "title": "Testimonies",
+        "description": "Witness descriptions of what they saw or experiencer descriptions of what happened to them.",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.category",
+    "pk": 10,
+    "fields": {
+        "uid": "d9267f72-b642-4d70-bd00-56fecb1a3f29",
+        "add_date": "2021-03-29T07:43:23.227Z",
+        "title": "Analyses",
+        "description": "Thoughtful explanations of (part of) an event.",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.category",
+    "pk": 11,
+    "fields": {
+        "uid": "d83a601f-6dd4-4a17-8fec-eca9c979cf15",
+        "add_date": "2021-03-29T07:45:50.578Z",
+        "title": "Explorations",
+        "description": "Physical inspections of event locations.",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.category",
+    "pk": 12,
+    "fields": {
+        "uid": "da22d7ff-961d-4a06-98f6-d20d479440dd",
+        "add_date": "2021-03-29T07:50:19.698Z",
+        "title": "Interviews",
+        "description": "Conversations with witnesses, experiencers, analysts, or authorities.",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.category",
+    "pk": 13,
+    "fields": {
+        "uid": "7ff964ba-3cf8-4be3-af94-9201bd351e29",
+        "add_date": "2021-03-29T08:17:03.642Z",
+        "title": "Science",
+        "description": "How warp drives might work, how celestial civilizations might be structured, how to do night videography, how to analyze videos, you know, science!",
+        "user": null,
+        "is_global": true,
+        "media_count": 0,
+        "thumbnail": "",
+        "listings_thumbnail": null
+    }
+}
+]
