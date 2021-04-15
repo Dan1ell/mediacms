@@ -1061,6 +1061,8 @@ class Tag(models.Model):
 
     title = models.CharField(max_length=100, unique=True, db_index=True)
 
+    plural = models.CharField(max_length=100, unique=True, db_index=True, blank=True, null=True)
+
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, blank=True, null=True
     )
@@ -1074,6 +1076,8 @@ class Tag(models.Model):
         help_text="Thumbnail to show on listings",
         db_index=True,
     )
+     
+    parent_tag = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.title
