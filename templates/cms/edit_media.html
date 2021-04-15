@@ -6,19 +6,58 @@
 
 {% block headermeta %}{% endblock headermeta %}
 
-{% block innercontent %}
-<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
-<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+{% block externallinks %}
+{% if LOAD_FROM_CDN %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" rel="preload" as="script">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% else %}
+<link href="{% static "lib/jquery/3.6.0/jquery.min.js" %}" rel="preload" as="script">
+<script src="{% static "lib/jquery/3.6.0/jquery.min.js" %}"></script>
+{% endif %}
+{% endblock externallinks %}
 
-        <div class="user-action-form-wrap">
-		<div class="user-action-form-inner">
-			<h1>Edit Media</h1>
-			<form enctype="multipart/form-data" action="" method="post" class="post-form">
-				{% csrf_token %}
-				{{ form|crispy }}
-				<button class="primaryAction" type="submit">Update Media</button>
-			</form>
-		</div>
+{% block innercontent %}
+<script type="text/javascript" src="{% static " ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static " ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript">
+		$(document).ready(function () {
+			$("#id_new_tags").keypress(function (event) {
+				if (event.key == ',') {
+					var tag_entries = $(this).val();
+					
+					tags_list = tag_entries.split(',');
+					$.each(tags_list, function(key, value) {
+  						tags_list[key] = value.trim().split(' ').join('-');
+					});
+					tags_string = tags_list.toString();
+
+					$.ajax({
+						type: 'GET',
+						url: "{% url 'update_subtags_in_help_text' %}",
+						data: { "new_tags": tags_string },
+						success: function (response) {
+							$("#hint_id_new_tags").text(response);
+						},
+						error: function (xhr, status, error){
+         					var error_message = xhr.status + ': ' + xhr.statusText;
+							console.warn("Error retrieving subtags: " + error_message);
+							log(qq.format("This shows up: " + error_message));
+						}
+					});
+				}
+			});
+		});
+</script>
+
+<div class="user-action-form-wrap">
+	<div class="user-action-form-inner">
+		<h1>Edit Media</h1>
+		<form enctype="multipart/form-data" action="" method="post" class="post-form">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button class="primaryAction" type="submit">Update Media</button>
+		</form>
 	</div>
+</div>
 {% endblock innercontent %}
 
