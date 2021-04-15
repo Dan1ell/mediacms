@@ -1,0 +1,42 @@
+[
+{
+    "model": "files.tag",
+    "pk": 1,
+    "fields": {
+        "title": "lights",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 2,
+    "fields": {
+        "title": "craft",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 3,
+    "fields": {
+        "title": "entities",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 4,
+    "fields": {
+        "title": "speeders",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null
+    }
+}
+]
