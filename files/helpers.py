@@ -234,6 +234,26 @@ def run_command(cmd, cwd=None):
     return ret
 
 
+def exiftool_info(input_file):
+    """Get the info about an input file, as determined by exiftool"""
+
+    ret = {}
+
+    if not os.path.isfile(input_file):
+        ret["fail"] = True
+        return ret
+
+    cmd = ["exiftool", "-dateFormat", "%Y-%m-%d %H:%M:%S%z", "-json", input_file]
+    stdout = run_command(cmd).get("out")
+
+    if stdout:
+        ret = json.loads(stdout)
+        return ret
+    else:
+        ret["fail"] = True
+        return ret
+
+
 def media_file_info(input_file):
     """
     Get the info about an input file, as determined by ffprobe

@@ -499,7 +499,10 @@ class Media(models.Model):
         Set encoding_status as success for non video
         content since all listings filter for encoding_status success
         """
-
+        
+        exiftool_info = helpers.exiftool_info(self.media_file.path)
+        self.exiftool_media_info = exiftool_info[0]
+        
         kind = helpers.get_file_type(self.media_file.path)
         if kind is not None:
             if kind == "image":
@@ -542,6 +545,7 @@ class Media(models.Model):
                     "listable",
                     "media_type",
                     "duration",
+                    "exiftool_media_info",
                     "media_info",
                     "video_height",
                     "size",
