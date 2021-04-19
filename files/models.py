@@ -207,7 +207,9 @@ class Media(models.Model):
         help_text="media file",
     )
 
-    media_info = models.TextField(blank=True, help_text="extracted media metadata info")
+    exiftool_media_info = models.TextField("Exiftool meta data", blank=True, help_text="extracted media metadata")
+
+    media_info = models.TextField("FFprobe meta data", blank=True, help_text="extracted media metadata")
 
     media_type = models.CharField(
         max_length=20,
