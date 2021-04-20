@@ -460,12 +460,16 @@ class Media(models.Model):
             a_tags = " ".join([tag.title for tag in self.tags.all()])
             b_tags = " ".join([tag.title.replace("-", " ") for tag in self.tags.all()])
 
+        recorded_date_str = ""
+        if self.recorded_date:
+            recorded_date_str = self.recorded_date.strftime("%Y-%m-%d")
+
         items = [
             helpers.clean_query(self.title),
             self.user.username,
             self.user.email,
             self.user.name,
-            self.recorded_date.strftime("%Y-%m-%d"),
+            recorded_date_str,            
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
@@ -475,7 +479,7 @@ class Media(models.Model):
         text = " ".join(
             [token for token in text.lower().split(" ") if token not in STOP_WORDS]
         )
-
+        
         sql_code = """
             UPDATE {db_table} SET search = to_tsvector(
                 '{config}', '{text}'
