@@ -465,6 +465,7 @@ class Media(models.Model):
             self.user.username,
             self.user.email,
             self.user.name,
+            self.recorded_date.strftime("%Y-%m-%d"),
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
