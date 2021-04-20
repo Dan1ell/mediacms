@@ -20,6 +20,7 @@ from django.urls import reverse
 from django.utils.html import strip_tags
 from django.contrib.postgres.search import SearchVectorField
 from mptt.models import MPTTModel, TreeForeignKey
+from datetime import datetime
 
 from imagekit.processors import ResizeToFit
 from imagekit.models import ProcessedImageField
@@ -513,6 +514,17 @@ class Media(models.Model):
         exiftool_info = helpers.exiftool_info(self.media_file.path)
         self.exiftool_media_info = exiftool_info[0]
         
+        creation_date_str = exiftool_info[0].get('CreationDate')
+        if creation_date_str:
+            try: 
+                recorded_date = datetime.strptime(creation_date_str, "%Y-%m-%d %H:%M:%S%z")
+                self.recorded_date = recorded_date
+            except:
+                self.recorded_date = None
+        gps_coordinates_str = exiftool_info[0].get('GPSCoordinates')
+        if gps_coordinates_str:
+            self.recorded_location_gpscoordinates = gps_coordinates_str
+
         kind = helpers.get_file_type(self.media_file.path)
         if kind is not None:
             if kind == "image":
@@ -552,6 +564,8 @@ class Media(models.Model):
         if save:
             self.save(
                 update_fields=[
+                    "recorded_date",
+                    "recorded_location_gpscoordinates",
                     "listable",
                     "media_type",
                     "duration",
