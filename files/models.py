@@ -130,8 +130,20 @@ def category_thumb_path(instance, filename):
 class Media(models.Model):
     """The most important model for MediaCMS"""
 
+    recorded_date = models.DateTimeField(
+        "Date/Time Recorded", blank=True, null=True, db_index=True
+    )
+
     add_date = models.DateTimeField(
-        "Date produced", blank=True, null=True, db_index=True
+        "Date/Time Published", blank=True, null=True, db_index=True
+    )
+
+    edit_date = models.DateTimeField(
+        "Date/Time Edited", auto_now=True
+    )
+
+    recorded_location_gpscoordinates = models.CharField(
+        "GPS Coordinates", blank=True, null=True, max_length=90
     )
 
     allow_download = models.BooleanField(
@@ -155,8 +167,6 @@ class Media(models.Model):
     dislikes = models.IntegerField(default=0)
 
     duration = models.IntegerField(default=0)
-
-    edit_date = models.DateTimeField(auto_now=True)
 
     enable_comments = models.BooleanField(
         default=True, help_text="Whether comments will be allowed for this media"
