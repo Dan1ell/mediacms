@@ -526,6 +526,15 @@ class Media(models.Model):
                 self.recorded_date = recorded_date
             except:
                 self.recorded_date = None
+        else:
+            creation_date_str = exiftool_info[0].get('DateTimeOriginal')
+            if creation_date_str:
+                try: 
+                    recorded_date = datetime.strptime(creation_date_str, "%Y-%m-%d %H:%M:%S%z")
+                    self.recorded_date = recorded_date
+                except:
+                    self.recorded_date = None
+
         gps_coordinates_str = exiftool_info[0].get('GPSCoordinates')
         if gps_coordinates_str:
             self.recorded_location_gpscoordinates = gps_coordinates_str
