@@ -575,6 +575,15 @@ class Media(models.Model):
                 self.duration = int(float(ret.get("audio_info", {}).get("duration", 0)))
                 self.encoding_status = "success"
 
+        if self.encoding_status == "success" and self.media_type != "video":
+            exif_file_size = exiftool_info[0].get('FileSize')
+            if exif_file_size:
+                number = float(exif_file_size.split(" ")[0])
+                if number >= 100:
+                    self.size = helpers.show_file_size(number*1000) #MB
+                else:
+                    self.size = exif_file_size #kB
+
         if save:
             self.save(
                 update_fields=[

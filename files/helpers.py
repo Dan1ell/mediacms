@@ -491,7 +491,7 @@ def calculate_seconds(duration):
 def show_file_size(size):
     if size:
         size = size / 1000000
-        size = round(size, 1)
+        size = round(size, 2)
         size = "{0}MB".format(str(size))
     return size
 
