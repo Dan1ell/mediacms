@@ -24,18 +24,48 @@ class MediaAdmin(admin.ModelAdmin):
     list_display = [
         "title",
         "user",
+        "recorded_date",
         "add_date",
+        'edit_date',
         "media_type",
+        "size",
         "duration",
         "state",
         "is_reviewed",
         "encoding_status",
         "featured",
+        "views",
         "get_comments_count",
     ]
     list_filter = ["state", "is_reviewed", "encoding_status", "featured", "category"]
-    ordering = ("-add_date",)
-    readonly_fields = ("user", "tags", "category", "channel")
+    ordering = ("-add_date", )
+    readonly_fields = ("user", "tags", "category", "channel", 'recorded_date', 
+    'add_date', 'edit_date', 'recorded_location_gpscoordinates', 'duration', 'media_type',
+    'size', 'video_height', 'exiftool_media_info', 'media_info', )
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'user', 'tags', 'category', 
+            'recorded_date', 'add_date', 'edit_date', 'recorded_location_gpscoordinates', )
+        }),
+        ('Meta', {
+            'fields': ('media_type','duration', 'size', 'video_height', 'exiftool_media_info', 'media_info', )
+        }),
+        ('Quality', {
+            'fields': ('views', 'likes', 'dislikes', 'reported_times', )
+        }),
+        ('Process', {
+            'fields': ('state', 'is_reviewed', 'listable', 'enable_comments', 'featured', 'user_featured', 'rating_category', )
+        }),
+        ('File', {
+            'fields': ('encoding_status', 'uid', 'friendly_token', 'md5sum', 
+            'media_file', 'hls_file', 'preview_file_path', 'poster', 'uploaded_poster', 
+            'thumbnail', 'uploaded_thumbnail', 'thumbnail_time', 'sprites', 'search', )
+        }),
+        ('Other', {
+            'fields': ('license', 'password', )            
+        }),
+    )
 
     def get_comments_count(self, obj):
         return obj.comments.count()

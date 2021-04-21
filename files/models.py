@@ -20,6 +20,7 @@ from django.urls import reverse
 from django.utils.html import strip_tags
 from django.contrib.postgres.search import SearchVectorField
 from mptt.models import MPTTModel, TreeForeignKey
+from datetime import datetime
 
 from imagekit.processors import ResizeToFit
 from imagekit.models import ProcessedImageField
@@ -130,8 +131,20 @@ def category_thumb_path(instance, filename):
 class Media(models.Model):
     """The most important model for MediaCMS"""
 
+    recorded_date = models.DateTimeField(
+        "Date/Time Recorded", blank=True, null=True, db_index=True
+    )
+
     add_date = models.DateTimeField(
-        "Date produced", blank=True, null=True, db_index=True
+        "Date/Time Published", blank=True, null=True, db_index=True
+    )
+
+    edit_date = models.DateTimeField(
+        "Date/Time Edited", auto_now=True
+    )
+
+    recorded_location_gpscoordinates = models.CharField(
+        "GPS Coordinates", blank=True, null=True, max_length=90
     )
 
     allow_download = models.BooleanField(
@@ -155,8 +168,6 @@ class Media(models.Model):
     dislikes = models.IntegerField(default=0)
 
     duration = models.IntegerField(default=0)
-
-    edit_date = models.DateTimeField(auto_now=True)
 
     enable_comments = models.BooleanField(
         default=True, help_text="Whether comments will be allowed for this media"
@@ -449,11 +460,16 @@ class Media(models.Model):
             a_tags = " ".join([tag.title for tag in self.tags.all()])
             b_tags = " ".join([tag.title.replace("-", " ") for tag in self.tags.all()])
 
+        recorded_date_str = ""
+        if self.recorded_date:
+            recorded_date_str = self.recorded_date.strftime("%Y-%m-%d")
+
         items = [
             helpers.clean_query(self.title),
             self.user.username,
             self.user.email,
             self.user.name,
+            recorded_date_str,            
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
@@ -463,7 +479,7 @@ class Media(models.Model):
         text = " ".join(
             [token for token in text.lower().split(" ") if token not in STOP_WORDS]
         )
-
+        
         sql_code = """
             UPDATE {db_table} SET search = to_tsvector(
                 '{config}', '{text}'
@@ -503,6 +519,26 @@ class Media(models.Model):
         exiftool_info = helpers.exiftool_info(self.media_file.path)
         self.exiftool_media_info = exiftool_info[0]
         
+        creation_date_str = exiftool_info[0].get('CreationDate')
+        if creation_date_str:
+            try: 
+                recorded_date = datetime.strptime(creation_date_str, "%Y-%m-%d %H:%M:%S%z")
+                self.recorded_date = recorded_date
+            except:
+                self.recorded_date = None
+        else:
+            creation_date_str = exiftool_info[0].get('DateTimeOriginal')
+            if creation_date_str:
+                try: 
+                    recorded_date = datetime.strptime(creation_date_str, "%Y-%m-%d %H:%M:%S%z")
+                    self.recorded_date = recorded_date
+                except:
+                    self.recorded_date = None
+
+        gps_coordinates_str = exiftool_info[0].get('GPSCoordinates')
+        if gps_coordinates_str:
+            self.recorded_location_gpscoordinates = gps_coordinates_str
+
         kind = helpers.get_file_type(self.media_file.path)
         if kind is not None:
             if kind == "image":
@@ -542,6 +578,8 @@ class Media(models.Model):
         if save:
             self.save(
                 update_fields=[
+                    "recorded_date",
+                    "recorded_location_gpscoordinates",
                     "listable",
                     "media_type",
                     "duration",
