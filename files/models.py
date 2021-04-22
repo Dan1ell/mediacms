@@ -443,9 +443,12 @@ class Media(models.Model):
         # that needs to be search able
 
         a_tags = b_tags = ""
+        c_tags = d_tags = ""
         if self.id:
             a_tags = " ".join([tag.title for tag in self.tags.all()])
             b_tags = " ".join([tag.title.replace("-", " ") for tag in self.tags.all()])
+            c_tags = " ".join([tag.plural for tag in self.tags.all() if tag.plural])
+            d_tags = " ".join([tag.plural.replace("-", " ") for tag in self.tags.all() if tag.plural])
 
         items = [
             helpers.clean_query(self.title),
@@ -455,6 +458,8 @@ class Media(models.Model):
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
+            c_tags,
+            d_tags,
         ]
         items = [item for item in items if item]
         text = " ".join(items)
