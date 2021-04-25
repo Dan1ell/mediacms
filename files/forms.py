@@ -1,5 +1,5 @@
 from django import forms
-from .models import Media, Subtitle
+from .models import Media, Subtitle, Tag
 from .methods import is_mediacms_editor, get_next_state
 
 
@@ -9,7 +9,7 @@ class MultipleSelect(forms.CheckboxSelectMultiple):
 
 class MediaForm(forms.ModelForm):
     new_tags = forms.CharField(
-        label="Tags", help_text="a comma separated list of new tags.", required=False
+        label="Tags", help_text="A comma separated list of relevant keywords. ", required=False, widget=forms.Textarea()
     )
 
     class Meta:
@@ -45,6 +45,12 @@ class MediaForm(forms.ModelForm):
         self.fields["new_tags"].initial = ", ".join(
             [tag.title for tag in self.instance.tags.all()]
         )
+        
+        #set initial help text for tags by listing top level tags
+        #comment this out before running migrations on Tag
+        top_tags = Tag.objects.filter(parent_tag__isnull=True)
+        if top_tags:
+            self.fields['new_tags'].help_text+="e.g. " + ", ".join(str(tag) for tag in top_tags) 
 
     def clean_uploaded_poster(self):
         image = self.cleaned_data.get("uploaded_poster", False)

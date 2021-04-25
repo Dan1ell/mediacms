@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -66,6 +67,25 @@ from .serializers import (
 from .stop_words import STOP_WORDS
 
 VALID_USER_ACTIONS = [action for action, name in USER_MEDIA_ACTIONS]
+
+def update_subtags_in_help_text(request):
+    """suggest related tags"""
+
+    tags_list = request.GET.get("new_tags").split(",")
+    if tags_list:
+        last_tag = slugify(tags_list[-1])
+
+        subtags = Tag.objects.filter(parent_tag__title=last_tag)       
+        if subtags.exists():
+            suggestions=", ".join(str(subtag) for subtag in subtags) 
+            return HttpResponse(suggestions)
+
+        subtags = Tag.objects.filter(parent_tag__plural=last_tag)       
+        if subtags.exists():
+            suggestions=", ".join(str(subtag) for subtag in subtags) 
+            return HttpResponse(suggestions)
+
+    return HttpResponse()
 
 
 def about(request):
@@ -192,11 +212,18 @@ def edit_media(request):
                     tag = slugify(tag)
                     if tag:
                         try:
-                            tag = Tag.objects.get(title=tag)
+                            potential_tag = Tag.objects.get(title=tag)
+                            if potential_tag not in media.tags.all():
+                                media.tags.add(potential_tag)
                         except Tag.DoesNotExist:
-                            tag = Tag.objects.create(title=tag, user=request.user)
-                        if tag not in media.tags.all():
-                            media.tags.add(tag)
+                            try:
+                                potential_tag = Tag.objects.get(plural=tag)
+                                if potential_tag not in media.tags.all():
+                                    media.tags.add(potential_tag)
+                            except Tag.DoesNotExist:
+                                new_tag = Tag.objects.create(title=tag, user=request.user)
+                                if new_tag not in media.tags.all():
+                                    media.tags.add(new_tag)
             messages.add_message(request, messages.INFO, "Media was edited!")
             return HttpResponseRedirect(media.get_absolute_url())
     else:
@@ -1298,3 +1325,4 @@ class TaskDetail(APIView):
     def delete(self, request, uid, format=None):
         revoke(uid, terminate=True)
         return Response(status=status.HTTP_204_NO_CONTENT)
+

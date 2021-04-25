@@ -456,9 +456,12 @@ class Media(models.Model):
         # that needs to be search able
 
         a_tags = b_tags = ""
+        c_tags = d_tags = ""
         if self.id:
             a_tags = " ".join([tag.title for tag in self.tags.all()])
             b_tags = " ".join([tag.title.replace("-", " ") for tag in self.tags.all()])
+            c_tags = " ".join([tag.plural for tag in self.tags.all() if tag.plural])
+            d_tags = " ".join([tag.plural.replace("-", " ") for tag in self.tags.all() if tag.plural])
 
         recorded_date_str = ""
         if self.recorded_date:
@@ -473,6 +476,8 @@ class Media(models.Model):
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
+            c_tags,
+            d_tags,
         ]
         items = [item for item in items if item]
         text = " ".join(items)
@@ -1114,6 +1119,8 @@ class Tag(models.Model):
 
     title = models.CharField(max_length=100, unique=True, db_index=True)
 
+    plural = models.CharField(max_length=100, unique=True, db_index=True, blank=True, null=True)
+
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, blank=True, null=True
     )
@@ -1127,6 +1134,11 @@ class Tag(models.Model):
         help_text="Thumbnail to show on listings",
         db_index=True,
     )
+     
+    parent_tag = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='subtags')
+
+    def get_parents(self):
+        return ", ".join([str(p) for p in self.parent_tag.all()])
 
     def __str__(self):
         return self.title

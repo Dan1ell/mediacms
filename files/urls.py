@@ -37,6 +37,7 @@ urlpatterns = [
     url("^rss/search", SearchRSSFeed()),
     url(r"^search", views.search, name="search"),
     url(r"^scpublisher", views.upload_media, name="upload_media"),
+    url(r"^subtags", views.update_subtags_in_help_text, name="update_subtags_in_help_text"), 
     url(r"^tags", views.tags, name="tags"),
     url(r"^tos$", views.tos, name="terms_of_service"),
     url(r"^view", views.view_media, name="get_media"),
