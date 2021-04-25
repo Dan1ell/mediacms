@@ -1082,7 +1082,10 @@ class Tag(models.Model):
         db_index=True,
     )
      
-    parent_tag = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    parent_tag = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='subtags')
+
+    def get_parents(self):
+        return ", ".join([str(p) for p in self.parent_tag.all()])
 
     def __str__(self):
         return self.title

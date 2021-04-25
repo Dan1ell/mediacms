@@ -47,6 +47,7 @@ class MediaForm(forms.ModelForm):
         )
         
         #set initial help text for tags by listing top level tags
+        #comment this out before running migrations on Tag
         top_tags = Tag.objects.filter(parent_tag__isnull=True)
         if top_tags:
             self.fields['new_tags'].help_text+="e.g. " + ", ".join(str(tag) for tag in top_tags) 
