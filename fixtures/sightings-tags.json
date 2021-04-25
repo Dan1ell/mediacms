@@ -8,7 +8,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -18,9 +20,11 @@
         "title": "craft",
         "plural": null,
         "user": null,
-        "media_count": 1,
+        "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -32,7 +36,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -44,7 +50,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -56,7 +64,7 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": null
+        "parent_tag": []
     }
 },
 {
@@ -64,11 +72,11 @@
     "pk": 9,
     "fields": {
         "title": "interaction",
-        "plural": null,
+        "plural": "interactions",
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": null
+        "parent_tag": []
     }
 },
 {
@@ -80,7 +88,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": null
+        "parent_tag": [
+            57
+        ]
     }
 },
 {
@@ -92,7 +102,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": null
+        "parent_tag": [
+            57
+        ]
     }
 },
 {
@@ -104,7 +116,7 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": null
+        "parent_tag": []
     }
 },
 {
@@ -116,7 +128,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 9
+        "parent_tag": [
+            9
+        ]
     }
 },
 {
@@ -128,7 +142,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 9
+        "parent_tag": [
+            9
+        ]
     }
 },
 {
@@ -136,11 +152,13 @@
     "pk": 15,
     "fields": {
         "title": "examination",
-        "plural": null,
+        "plural": "examinations",
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 9
+        "parent_tag": [
+            9
+        ]
     }
 },
 {
@@ -152,7 +170,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 1
+        "parent_tag": [
+            1
+        ]
     }
 },
 {
@@ -164,7 +184,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 1
+        "parent_tag": [
+            1
+        ]
     }
 },
 {
@@ -176,7 +198,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 1
+        "parent_tag": [
+            1
+        ]
     }
 },
 {
@@ -188,7 +212,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 1
+        "parent_tag": [
+            1
+        ]
     }
 },
 {
@@ -200,7 +226,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -208,11 +236,13 @@
     "pk": 21,
     "fields": {
         "title": "conversation",
-        "plural": null,
+        "plural": "conversations",
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 13
+        "parent_tag": [
+            13
+        ]
     }
 },
 {
@@ -224,7 +254,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 13
+        "parent_tag": [
+            13
+        ]
     }
 },
 {
@@ -236,7 +268,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 3
+        "parent_tag": [
+            3
+        ]
     }
 },
 {
@@ -248,7 +282,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 3
+        "parent_tag": [
+            3
+        ]
     }
 },
 {
@@ -260,7 +296,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 3
+        "parent_tag": [
+            3
+        ]
     }
 },
 {
@@ -272,7 +310,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -284,7 +324,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 2
+        "parent_tag": [
+            2
+        ]
     }
 },
 {
@@ -296,7 +338,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 2
+        "parent_tag": [
+            2
+        ]
     }
 },
 {
@@ -308,7 +352,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 2
+        "parent_tag": [
+            2
+        ]
     }
 },
 {
@@ -320,7 +366,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 2
+        "parent_tag": [
+            2
+        ]
     }
 },
 {
@@ -332,7 +380,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 2
+        "parent_tag": [
+            2
+        ]
     }
 },
 {
@@ -344,7 +394,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -356,7 +408,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -368,7 +422,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -380,7 +436,10 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            95,
+            27
+        ]
     }
 },
 {
@@ -392,7 +451,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -404,7 +465,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -416,7 +479,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -428,7 +493,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -440,7 +507,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -452,7 +521,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 27
+        "parent_tag": [
+            27
+        ]
     }
 },
 {
@@ -464,7 +535,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -476,7 +549,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -488,7 +563,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -500,7 +577,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            45
+        ]
     }
 },
 {
@@ -512,7 +591,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -524,7 +605,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -536,7 +619,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -548,7 +633,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 28
+        "parent_tag": [
+            28
+        ]
     }
 },
 {
@@ -560,7 +647,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 29
+        "parent_tag": [
+            29
+        ]
     }
 },
 {
@@ -572,7 +661,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 29
+        "parent_tag": [
+            29
+        ]
     }
 },
 {
@@ -584,7 +675,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 29
+        "parent_tag": [
+            29
+        ]
     }
 },
 {
@@ -596,7 +689,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 8
+        "parent_tag": [
+            8
+        ]
     }
 },
 {
@@ -608,7 +703,9 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 3
+        "parent_tag": [
+            3
+        ]
     }
 },
 {
@@ -620,19 +717,682 @@
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 3
+        "parent_tag": [
+            3
+        ]
     }
 },
 {
     "model": "files.tag",
-    "pk": 56,
+    "pk": 57,
     "fields": {
-        "title": "testtag",
+        "title": "altered-time",
+        "plural": null,
+        "user": null,
+        "media_count": 5,
+        "listings_thumbnail": null,
+        "parent_tag": []
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 58,
+    "fields": {
+        "title": "gained-time",
         "plural": null,
         "user": null,
         "media_count": 0,
         "listings_thumbnail": null,
-        "parent_tag": 23
+        "parent_tag": [
+            57
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 59,
+    "fields": {
+        "title": "false-ufo",
+        "plural": "false ufos",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            8
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 60,
+    "fields": {
+        "title": "camera-effect",
+        "plural": "camera effects",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            59
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 61,
+    "fields": {
+        "title": "object-close-to-lens",
+        "plural": "objects close to lens",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 62,
+    "fields": {
+        "title": "hair",
+        "plural": "hairs",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 63,
+    "fields": {
+        "title": "insect",
+        "plural": "insects",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            75,
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 64,
+    "fields": {
+        "title": "web",
+        "plural": "webbing",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 65,
+    "fields": {
+        "title": "strand",
+        "plural": "strands",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 66,
+    "fields": {
+        "title": "moisture",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 67,
+    "fields": {
+        "title": "dust",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            61
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 68,
+    "fields": {
+        "title": "lens-flare",
+        "plural": "lens flares",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 69,
+    "fields": {
+        "title": "green-dot",
+        "plural": "green dots",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            68
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 70,
+    "fields": {
+        "title": "focus-pixel",
+        "plural": "focus-pixels",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            68
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 71,
+    "fields": {
+        "title": "filtered-lens-flare",
+        "plural": "filtered-lens-flares",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            68
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 72,
+    "fields": {
+        "title": "droplet-on-lens",
+        "plural": "droplets-on-lens",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            68
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 73,
+    "fields": {
+        "title": "window-reflection",
+        "plural": "window-reflections",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 74,
+    "fields": {
+        "title": "camera-flash-reflection",
+        "plural": "camera-flash-reflections",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            73
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 75,
+    "fields": {
+        "title": "long-exposure",
+        "plural": "long-exposures",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 76,
+    "fields": {
+        "title": "aircraft",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            75,
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 77,
+    "fields": {
+        "title": "flashlight",
+        "plural": "flashlights",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            75
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 78,
+    "fields": {
+        "title": "glow-stick",
+        "plural": "glow sticks",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            75
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 79,
+    "fields": {
+        "title": "bird",
+        "plural": "birds",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            75,
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 80,
+    "fields": {
+        "title": "shutter-shape",
+        "plural": "shutter-shapes",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 81,
+    "fields": {
+        "title": "high-exposure",
+        "plural": "high exposures",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 82,
+    "fields": {
+        "title": "black-dot",
+        "plural": "black-dots",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            81
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 83,
+    "fields": {
+        "title": "blotted-out-pole",
+        "plural": "blotted-out-poles",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            81
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 84,
+    "fields": {
+        "title": "droplet-on-window",
+        "plural": "droplets-on-window",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 85,
+    "fields": {
+        "title": "forced-perspective",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            60
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 86,
+    "fields": {
+        "title": "atmospheric-effect",
+        "plural": "atmospheric effects",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            59
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 87,
+    "fields": {
+        "title": "false-horizon",
+        "plural": "false horizons",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            86
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 88,
+    "fields": {
+        "title": "fata-morgana",
+        "plural": "fata morganas",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            86
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 89,
+    "fields": {
+        "title": "parhelion",
+        "plural": "parhelia",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            86
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 90,
+    "fields": {
+        "title": "cloud",
+        "plural": "clouds",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            86
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 91,
+    "fields": {
+        "title": "lenticular-cloud",
+        "plural": "lenticular clouds",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            90
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 92,
+    "fields": {
+        "title": "fall-streak-hole",
+        "plural": "fall streak holes",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            90
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 93,
+    "fields": {
+        "title": "unclear-but-known-object",
+        "plural": "unclear-but-known-objects",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            59
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 94,
+    "fields": {
+        "title": "bag",
+        "plural": "bags",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 95,
+    "fields": {
+        "title": "balloon",
+        "plural": "balloons",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 96,
+    "fields": {
+        "title": "mylar",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            95
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 97,
+    "fields": {
+        "title": "ascender",
+        "plural": "ascenders",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            95
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 98,
+    "fields": {
+        "title": "drone",
+        "plural": "drones",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 99,
+    "fields": {
+        "title": "flare",
+        "plural": "flares",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 100,
+    "fields": {
+        "title": "contrail",
+        "plural": "contrails",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 101,
+    "fields": {
+        "title": "photo-manipulation",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 102,
+    "fields": {
+        "title": "video-manipulation",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            93
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 103,
+    "fields": {
+        "title": "ufo-app",
+        "plural": "ufo-apps",
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            102
+        ]
+    }
+},
+{
+    "model": "files.tag",
+    "pk": 104,
+    "fields": {
+        "title": "cgi",
+        "plural": null,
+        "user": null,
+        "media_count": 0,
+        "listings_thumbnail": null,
+        "parent_tag": [
+            102
+        ]
     }
 }
 ]
