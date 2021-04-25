@@ -53,8 +53,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class TagAdmin(admin.ModelAdmin):
     search_fields = ["title", "plural"]
-    list_display = ["title", "user", "media_count"]
+    list_display = ["title", "plural", "get_parents", "user", "media_count"]
     readonly_fields = ("user", "media_count")
+    
 
 
 class EncodeProfileAdmin(admin.ModelAdmin):
