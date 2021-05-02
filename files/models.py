@@ -6,6 +6,7 @@ import tempfile
 import random
 import json
 import m3u8
+import geocoder
 from django.utils import timezone
 from django.db import connection
 from django.db import models
@@ -145,6 +146,26 @@ class Media(models.Model):
 
     recorded_location_gpscoordinates = models.CharField(
         "GPS Coordinates", blank=True, null=True, max_length=90
+    )
+
+    recorded_location_country = models.CharField(
+        "Country Recorded", blank=True, null=True, max_length=90,
+        help_text="The country where the recording took place."
+    )
+
+    recorded_location_locality = models.CharField(
+        "Locality Recorded", blank=True, null=True, max_length=90,
+        help_text="The state or province where the recording took place."
+    )
+
+    recorded_location_sublocality = models.CharField(
+        "Sublocality Recorded", blank=True, null=True, max_length=90,
+        help_text="The county or parish where the recording took place."
+    )
+
+    recorded_location_place = models.CharField(
+        "Place Recorded", blank=True, null=True, max_length=90,
+        help_text="The city or town where the recording took place."
     )
 
     allow_download = models.BooleanField(
@@ -466,13 +487,33 @@ class Media(models.Model):
         recorded_date_str = ""
         if self.recorded_date:
             recorded_date_str = self.recorded_date.strftime("%Y-%m-%d")
+        
+        recorded_location_country_str = ""
+        if self.recorded_location_country:
+            recorded_location_country_str = self.recorded_location_country
+        
+        recorded_location_locality_str = ""
+        if self.recorded_location_locality:
+            recorded_location_locality_str = self.recorded_location_locality
+
+        recorded_location_sublocality_str = ""
+        if self.recorded_location_sublocality:
+            recorded_location_sublocality_str = self.recorded_location_sublocality
+        
+        recorded_location_place_str = ""
+        if self.recorded_location_place:
+            recorded_location_place_str = self.recorded_location_place
 
         items = [
             helpers.clean_query(self.title),
             self.user.username,
             self.user.email,
             self.user.name,
-            recorded_date_str,            
+            recorded_date_str,
+            recorded_location_country_str,
+            recorded_location_locality_str,
+            recorded_location_sublocality_str,
+            recorded_location_place_str,          
             helpers.clean_query(self.description),
             a_tags,
             b_tags,
@@ -542,7 +583,34 @@ class Media(models.Model):
 
         gps_coordinates_str = exiftool_info[0].get('GPSCoordinates')
         if gps_coordinates_str:
+            # '5 deg 51\' 24.84" N, 55 deg 8\' 57.84" W, 2.482 m Above Sea Level'
             self.recorded_location_gpscoordinates = gps_coordinates_str
+        else:
+            gps_coordinates_str = exiftool_info[0].get('GPSPosition')
+            if gps_coordinates_str: 
+                # '5 deg 50\' 18.50" N, 55 deg 11\' 3.89" W'
+                gps_coordinates_str = gps_coordinates_str + ', None'
+                self.recorded_location_gpscoordinates = gps_coordinates_str 
+
+        if self.recorded_location_gpscoordinates:
+            lat, lon, alt = gps_coordinates_str.split(", ") 
+            deg, minutes, seconds, direction =  re.split('[°\'"]', lat.replace(' deg', '°'))
+            ddlat = helpers.dms2dd(deg, minutes, seconds, direction.strip())
+            deg, minutes, seconds, direction =  re.split('[°\'"]', lon.replace(' deg', '°'))
+            ddlon = helpers.dms2dd(deg, minutes, seconds, direction.strip())
+
+            try: 
+                g = geocoder.google([ddlat, ddlon], method='reverse', key=settings.GOOGLE_API_KEY, timeout=5.0)
+                if g.ok:
+                    self.recorded_location_country = g.country
+                    self.recorded_location_locality = g.state
+                    sublocality = g.json.get('sublocality')
+                    if sublocality:
+                        self.recorded_location_sublocality = g.json.get('sublocality')
+                    self.recorded_location_place = g.city
+            except ConnectionError:
+                pass          
+
 
         kind = helpers.get_file_type(self.media_file.path)
         if kind is not None:

@@ -772,3 +772,14 @@ def clean_query(query):
         query = query.replace(char, "")
 
     return query.lower()
+
+def dms2dd(degrees, minutes, seconds, direction):
+    """ 
+    Converts gps coordinates from degrees, minutes, seconds 
+    to decimal degrees. 
+    """
+
+    dd = float(degrees) + float(minutes)/60 + float(seconds)/(60*60)
+    if direction == 'W' or direction == 'S':
+        dd *= -1
+    return dd

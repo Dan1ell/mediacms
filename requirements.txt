@@ -30,3 +30,6 @@ flake8
 pep8
 django-silk
 django-debug-toolbar
+
+# custom packages
+geocoder
