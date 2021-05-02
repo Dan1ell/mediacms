@@ -46,16 +46,20 @@ class MediaAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('title', 'description', 'user', 'tags', 'category', 
-            'recorded_date', 'add_date', 'edit_date', 'recorded_location_gpscoordinates', )
+            'recorded_date', 'add_date', 'edit_date', 'recorded_location_gpscoordinates', 
+            'recorded_location_country', 'recorded_location_locality', 
+            'recorded_location_sublocality', 'recorded_location_place')
         }),
         ('Meta', {
-            'fields': ('media_type','duration', 'size', 'video_height', 'exiftool_media_info', 'media_info', )
+            'fields': ('media_type','duration', 'size', 'video_height', 
+            'exiftool_media_info', 'media_info', )
         }),
         ('Quality', {
             'fields': ('views', 'likes', 'dislikes', 'reported_times', )
         }),
         ('Process', {
-            'fields': ('state', 'is_reviewed', 'listable', 'enable_comments', 'featured', 'user_featured', 'rating_category', )
+            'fields': ('state', 'is_reviewed', 'listable', 'enable_comments', 'featured', 
+            'user_featured', 'rating_category', )
         }),
         ('File', {
             'fields': ('encoding_status', 'uid', 'friendly_token', 'md5sum', 
