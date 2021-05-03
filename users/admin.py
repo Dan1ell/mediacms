@@ -29,6 +29,7 @@ class UserAdmin(admin.ModelAdmin):
         "is_editor",
         "is_manager",
         "media_count",
+        "email_is_verified"
     ]
     list_filter = ["is_superuser", "is_editor", "is_manager"]
     ordering = ("-date_added",)
