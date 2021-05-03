@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   migrations:
-    image: dan1ell/mediacms
+    image: dan1ell/mediacms:main
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -17,7 +17,7 @@ services:
       db:
         condition: service_healthy
   web:
-    image: dan1ell/mediacms
+    image: dan1ell/mediacms:main
     deploy:
       replicas: 1
     ports:
@@ -32,7 +32,7 @@ services:
     depends_on:
       - migrations
   celery_beat:
-    image: dan1ell/mediacms
+    image: dan1ell/mediacms:main
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -44,7 +44,7 @@ services:
     depends_on:
       - redis
   celery_worker:
-    image: dan1ell/mediacms
+    image: dan1ell/mediacms:main
     deploy:
       replicas: 1
     volumes:
