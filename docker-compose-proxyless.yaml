@@ -1,15 +1,6 @@
 version: "3.7"
 
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./deploy/docker/reverse_proxy/certs/:/etc/nginx/certs/
-      - ./deploy/docker/reverse_proxy/client_max_body_size.conf:/etc/nginx/conf.d/client_max_body_size.conf:ro
   migrations:
     image: dan1ell/mediacms:main
     volumes:
@@ -29,6 +20,8 @@ services:
     image: dan1ell/mediacms:main
     deploy:
       replicas: 1
+    ports:
+      - "80:80"
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -36,7 +29,6 @@ services:
       ENABLE_CELERY_SHORT: 'no'
       ENABLE_CELERY_LONG: 'no'
       ENABLE_MIGRATIONS: 'no'
-      VIRTUAL_HOST: localhost
     depends_on:
       - migrations
   celery_beat:
