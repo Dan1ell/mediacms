@@ -15,7 +15,6 @@ static/rest_framework/
 cms/local_settings.py
 deploy/docker/local_settings.py
 deploy/docker/reverse_proxy/certs/
-docker-compose-proxyless.yaml
 docker-compose.yaml
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos
