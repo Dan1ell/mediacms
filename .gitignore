@@ -14,7 +14,8 @@ static/mptt/
 static/rest_framework/
 cms/local_settings.py
 deploy/docker/local_settings.py
-deploy/docker/reverse_proxy/certs/
+deploy/docker/reverse_proxy/certs/localhost.crt
+deploy/docker/reverse_proxy/certs/localhost.key
 docker-compose.yaml
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos
