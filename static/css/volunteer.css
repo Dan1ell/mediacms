@@ -1,0 +1,11 @@
+a {
+    color: #2e76c2;
+  }
+.volunteer-wrapper {
+    max-width: 550px;
+    margin: auto;
+}
+.volunteer-wrapper p, ul{
+    line-height: 1.8;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block headtitle %}Volunteer - {{PORTAL_NAME}}{% endblock headtitle %}
+
+{% block headermeta %}
+<meta property="og:title" content="Volunteer - {{PORTAL_NAME}}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="">
+
+<meta name="twitter:card" content="summary">
+
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": [{
+		"@type": "ListItem",
+		"position": 1,
+        "name": "{{PORTAL_NAME}}",
+        "item": {
+			"@type": "WebPage",
+	        "@id": "{{FRONTEND_HOST}}"
+	    }
+    },
+    {
+		"@type": "ListItem",
+		"position": 2,
+        "name": "Volunteer",
+        "item": {
+			"@type": "VolunteerPage",
+	        "@id": "{{FRONTEND_HOST}}/volunteer"
+	    }
+    }]
+}
+
+
+</script>
+<link href="{% static "css/volunteer.css" %}" rel="stylesheet"/>
+{% endblock headermeta %}
+
+{% block innercontent %}
+
+<div class="custom-page-wrapper">
+	<h2>Love what I do and want to help? Awesome!</h2>
+	<hr/>	
+	
+    <div class="volunteer-wrapper">
+    <p>If you want to help me grow Sightings and inspire others to help end the stigma around UFOs and uncover what UFOs actually are, I would be honored to have you volunteer in some way.</p>
+    <p>Here are a few areas that I currently would love help with:</p>
+
+    <ul>
+        <li>Community Engagement – keep the conversation going on our webapp, Discord, Facebook, and Twitter accounts.</li>
+        <li>Social Media Influence – post on your own social media accounts about Sightings.</li>
+        <li>Internet Research – find information via Google.</li>
+        <li>Virtual Assistance – help with day-to-day tasks.</li>        
+    </ul>
+    <p>Send me an email (<a href="mailto:contact@sightings.live">contact@sightings.live</a>) and let me know what you’d like to do! If you possess a skill or strength related to something not listed above, still feel free to email me.</p>
+
+    <p>I’m appreciative of any help you’re willing to offer.</p>
+
+    <p>Danielle</p>
+
+    <p>I’m appreciative of any help you’re willing to offer.</p>
+
+    <p>PS: If you don’t have a lot of time available but still want to help in some way, you can just as easily text a friend and share the site (<a href="https://sightings.live" target="_blank">https://sightings.live</a>) with them. </p>
+
+    <p>PPS: Long-term volunteers will be granted a premium account when we launch fully!</p>
+    <div>
+
+</div>
+{% endblock %}

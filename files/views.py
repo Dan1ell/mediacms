@@ -94,6 +94,11 @@ def about(request):
     context = {}
     return render(request, "cms/about.html", context)
 
+def volunteer(request):
+    """Volunteer view"""
+
+    context = {}
+    return render(request, "cms/volunteer.html", context)
 
 @login_required
 def add_subtitle(request):
