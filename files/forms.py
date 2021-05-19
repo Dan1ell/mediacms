@@ -46,11 +46,9 @@ class MediaForm(forms.ModelForm):
             [tag.title for tag in self.instance.tags.all()]
         )
         
-        #set initial help text for tags by listing top level tags
-        #comment this out before running migrations on Tag
-        top_tags = Tag.objects.filter(parent_tag__isnull=True)
-        if top_tags:
-            self.fields['new_tags'].help_text+="e.g. " + ", ".join(str(tag) for tag in top_tags) 
+        #set initial help text for tags with listing of top level tags
+        self.fields['new_tags'].help_text+="e.g. sighting, interaction, altered-time, relocation."
+
 
     def clean_uploaded_poster(self):
         image = self.cleaned_data.get("uploaded_poster", False)
