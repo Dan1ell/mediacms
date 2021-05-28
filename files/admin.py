@@ -1,4 +1,7 @@
 from django.contrib import admin
+from files.models import Category
+from django.contrib import messages
+from django.utils.translation import ngettext
 
 from .models import (
     Media,
@@ -38,6 +41,7 @@ class MediaAdmin(admin.ModelAdmin):
         "get_comments_count",
     ]
     list_filter = ["state", "is_reviewed", "encoding_status", "featured", "category"]
+    actions = ["set_category_evidence"]
     ordering = ("-add_date", )
     readonly_fields = ("user", "tags", "category", "channel", 'recorded_date', 
     'add_date', 'edit_date', 'recorded_location_gpscoordinates', 'duration', 'media_type',
@@ -76,6 +80,16 @@ class MediaAdmin(admin.ModelAdmin):
 
     get_comments_count.short_description = "Comments count"
 
+    def set_category_evidence(self, request, queryset):        
+        c = Category.objects.get(title='Evidence')
+        count = queryset.count()
+        for m in queryset:
+            m.category.add(c)
+        self.message_user(request, ngettext(
+            '%d file was successfully marked as evidence.',
+            '%d files were successfully marked as evidence.',
+            count,
+        ) % count, messages.SUCCESS)
 
 class CategoryAdmin(admin.ModelAdmin):
     search_fields = ["title"]
