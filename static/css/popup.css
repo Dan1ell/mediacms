@@ -10,23 +10,33 @@
   align-items: center ; /* center vertically */
 }
 
+.modal-header {
+  background-color: #272727;
+  padding: 15px;
+  border-radius: 5px 5px 0px 0px;
+}
+
+
+
 @media screen and (max-width:1008px){
   .modal-content {
     max-width:90vw;
-    min-height:300px;
+    min-height:200px;
     height:75vh;
     border:none; 
-    border-radius: 15px;
+    border-radius: 10px;
     padding:15px;
     position: relative;
-    background-color: #121212;     
+    background-color: #121212;   
+    padding: 0px;  
   }
 
   .modal-text {
     max-width:90vw;
-    min-height:300px;
-    height:65vh;
+    min-height:240px;
+    height:62vh;
     overflow-y: scroll;
+    padding: 15px;
   }
 
   .newsBtn {
@@ -38,12 +48,20 @@
   .modal-content {
     max-width:700px;
     min-height:300px;
-    height:600px;
+    height:auto;
     border:none; 
-    border-radius: 15px;
+    border-radius: 10px;
     padding:15px;
     position: relative;
     background-color: #121212;  
+    padding: 0px;  
+  }
+
+  .modal-text {
+    max-width:700px;
+    min-height:300px;
+    height:auto;
+    padding: 15px;
   }
 
   .newsBtn {
