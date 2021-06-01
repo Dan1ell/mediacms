@@ -18,7 +18,7 @@
 
 @media screen and (max-width:1008px){
   .modal-content {
-    max-width:90vw;
+    max-width:90%;
     min-height:200px;
     height:75vh;
     border:none; 
@@ -29,8 +29,7 @@
     padding: 0px;  
   }
 
-  .modal-text {
-    max-width:90vw;
+  .modal-text {    
     min-height:240px;
     height:62vh;
     overflow-y: scroll;
@@ -56,7 +55,6 @@
   }
 
   .modal-text {
-    max-width:700px;
     min-height:300px;
     height:auto;
     padding: 15px;
