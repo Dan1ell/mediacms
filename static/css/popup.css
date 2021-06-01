@@ -10,16 +10,22 @@
   align-items: center ; /* center vertically */
 }
 
-@media screen and (max-width:709px){
+@media screen and (max-width:1008px){
   .modal-content {
-    max-width:400px;
+    max-width:90vw;
     min-height:300px;
-    height:80vh;
+    height:75vh;
     border:none; 
     border-radius: 15px;
     padding:15px;
     position: relative;
-    background-color: #121212;  
+    background-color: #121212;     
+  }
+
+  .modal-text {
+    max-width:90vw;
+    min-height:300px;
+    height:65vh;
     overflow-y: scroll;
   }
 
@@ -28,7 +34,7 @@
   }
 }
 
-@media screen and (min-width:710px){
+@media screen and (min-width:1009px){
   .modal-content {
     max-width:700px;
     min-height:300px;
