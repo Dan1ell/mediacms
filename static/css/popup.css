@@ -10,14 +10,28 @@
   align-items: center ; /* center vertically */
 }
 
-.modal-content {
-  max-width:700px;
-  height:auto;
-  border:none; 
-  border-radius: 15px;
-  padding:15px;
-  position: relative;
-  background-color: #121212;  
+@media screen and (max-width:709px){
+  .modal-content {
+    max-width:400px;
+    height:auto;
+    border:none; 
+    border-radius: 15px;
+    padding:15px;
+    position: relative;
+    background-color: #121212;  
+  }
+}
+
+@media screen and (min-width:710px){
+  .modal-content {
+    max-width:700px;
+    height:auto;
+    border:none; 
+    border-radius: 15px;
+    padding:15px;
+    position: relative;
+    background-color: #121212;  
+  }
 }
 
 .close-modal {
