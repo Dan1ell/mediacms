@@ -242,7 +242,7 @@ class PlaylistDetailSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author_profile = serializers.ReadOnlyField(source="user.get_absolute_url")
-    author_name = serializers.ReadOnlyField(source="user.name")
+    author_name = serializers.ReadOnlyField(source="user.username")
     author_thumbnail_url = serializers.ReadOnlyField(source="user.thumbnail_url")
 
     class Meta:

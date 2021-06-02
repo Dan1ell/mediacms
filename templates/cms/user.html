@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block headtitle %}{% if user.name %}{{user.name}} - {% endif %}{{PORTAL_NAME}}{% endblock headtitle %}
+{% block headtitle %}{% if user.username %}{{user.username}} - {% endif %}{{PORTAL_NAME}}{% endblock headtitle %}
 
 {% block headermeta %}
 

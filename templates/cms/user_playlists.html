@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block headtitle %}{% if user.name %}{{user.name}} - {% endif %}Playlists - {{PORTAL_NAME}}{% endblock headtitle %}
+{% block headtitle %}{% if user.username %}{{user.username}} - {% endif %}Playlists - {{PORTAL_NAME}}{% endblock headtitle %}
 
 {% block headermeta %}
 
-<meta property="og:title" content="{% if user.name %}{{user.name}} - {% endif %}Playlists - {{PORTAL_NAME}}">
+<meta property="og:title" content="{% if user.username %}{{user.username}} - {% endif %}Playlists - {{PORTAL_NAME}}">
 <meta property="og:type" content="website">
 <meta property="og:description" content="">
 

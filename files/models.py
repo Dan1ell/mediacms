@@ -1040,7 +1040,7 @@ class Media(models.Model):
 
     @property
     def author_name(self):
-        return self.user.name
+        return self.user.username
 
     @property
     def author_username(self):
