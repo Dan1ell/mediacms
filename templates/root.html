@@ -11,7 +11,10 @@
         {% block headermeta %}
         
         <meta property="og:title" content="{{PORTAL_NAME}}">
+        <meta property="og:url" content="{{FRONTEND_HOST}}">
         <meta property="og:type" content="website">
+        <meta property="og:description" content="The premier platform for watching and analyzing UFO/UAP videos from around the world.">
+        <meta property="og:image" content="{{FRONTEND_HOST}}{% static 'images/og-image.png' %}">
 
         {%endblock headermeta %}
 
