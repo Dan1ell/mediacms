@@ -13,7 +13,32 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "display": "standalone"
+    "theme_color": "#4a4a4d",
+    "background_color": "#4a4a4d",
+    "display": "standalone",
+    "description": "The premier platform for watching and analyzing UFO/UAP videos from around the world.",
+    "start_url": "/",
+    "scope": "/",
+    "screenshots": [
+        {
+            "src": "pwa-how.jpeg",
+            "sizes": "320x693",
+            "type": "image/jpg"
+        },
+        {
+            "src": "pwa-sidebar.jpeg",
+            "sizes": "320x693",
+            "type": "image/jpg"
+        },
+        {
+            "src": "pwa-cam.jpeg",
+            "sizes": "320x693",
+            "type": "image/jpg"
+        },
+        {
+            "src": "pwa-recordings.jpeg",
+            "sizes": "320x693",
+            "type": "image/jpg"
+        }
+    ]
 }
