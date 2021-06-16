@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block headtitle %}Offline - {{PORTAL_NAME}}{% endblock headtitle %}
+
+{% block headermeta %}
+<meta property="og:title" content="Volunteer - {{PORTAL_NAME}}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": [{
+		"@type": "ListItem",
+		"position": 1,
+        "name": "{{PORTAL_NAME}}",
+        "item": {
+			"@type": "WebPage",
+	        "@id": "{{FRONTEND_HOST}}"
+	    }
+    },
+    {
+		"@type": "ListItem",
+		"position": 2,
+        "name": "Volunteer",
+        "item": {
+			"@type": "VolunteerPage",
+	        "@id": "{{FRONTEND_HOST}}/volunteer"
+	    }
+    }]
+}
+</script>
+{% endblock headermeta %}
+
+{% block innercontent %}
+<div class="custom-page-wrapper">
+    You seem to be offline. Check your internet connection.
+</div>
+{% endblock %}
