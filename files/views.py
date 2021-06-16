@@ -68,10 +68,6 @@ from .stop_words import STOP_WORDS
 
 VALID_USER_ACTIONS = [action for action, name in USER_MEDIA_ACTIONS]
 
-def offline(request):
-	template='offline.html'
-	return render(request,template)
-
 def update_subtags_in_help_text(request):
     """suggest related tags"""
 
@@ -90,6 +86,7 @@ def update_subtags_in_help_text(request):
             return HttpResponse(suggestions)
 
     return HttpResponse()
+
 
 def about(request):
     """About view"""

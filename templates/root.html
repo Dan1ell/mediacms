@@ -29,21 +29,6 @@
 
         {% block topimports %}{%endblock topimports %}
 
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    console.log("Will the service worker register?");
-                    navigator.serviceWorker.register("{% url 'service-worker.js' %}")
-                    .then(function(reg){
-                    console.log("Yes, it did.");})
-                    .catch(function(err) {
-                    console.log("No it didn't. This happened:", err)
-                    console.log("err.message:", err.message)
-                    });
-               })
-            }
-        </script>
-
         {% include "config/index.html" %}
 
         <!-- Global site tag (gtag.js) - Google Analytics -->

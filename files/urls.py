@@ -9,7 +9,6 @@ from .feeds import IndexRSSFeed, SearchRSSFeed
 
 urlpatterns = [
     url(r"^$", views.index),
-    url(r"^offline", views.offline, name="offline"),
     url(r"^about", views.about, name="about"),
     url(r"^volunteer", views.volunteer, name="volunteer"),
     url(r"^add_subtitle", views.add_subtitle, name="add_subtitle"),
