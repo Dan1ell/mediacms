@@ -1,6 +1,6 @@
 from django import forms
 from .models import Media, Subtitle, Tag
-from .methods import is_mediacms_editor, get_next_state
+from .methods import get_next_state, is_mediacms_editor 
 
 
 class MultipleSelect(forms.CheckboxSelectMultiple):
@@ -27,7 +27,7 @@ class MediaForm(forms.ModelForm):
             "thumbnail_time",
             "reported_times",
             "is_reviewed",
-            "allow_download"
+            "allow_download",
         )
         widgets = {
             "tags": MultipleSelect(),
@@ -42,9 +42,7 @@ class MediaForm(forms.ModelForm):
             self.fields.pop("featured")
             self.fields.pop("reported_times")
             self.fields.pop("is_reviewed")
-        self.fields["new_tags"].initial = ", ".join(
-            [tag.title for tag in self.instance.tags.all()]
-        )
+        self.fields["new_tags"].initial = ", ".join([tag.title for tag in self.instance.tags.all()])
         
         #set initial help text for tags with listing of top level tags
         self.fields['new_tags'].help_text+="e.g. sighting, interaction, altered-time, relocation."
@@ -61,9 +59,7 @@ class MediaForm(forms.ModelForm):
         data = self.cleaned_data
         state = data.get("state")
         if state != self.initial["state"]:
-            self.instance.state = get_next_state(
-                self.user, self.initial["state"], self.instance.state
-            )
+            self.instance.state = get_next_state(self.user, self.initial["state"], self.instance.state)
 
         media = super(MediaForm, self).save(*args, **kwargs)
         return media

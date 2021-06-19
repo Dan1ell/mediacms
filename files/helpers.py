@@ -1,18 +1,18 @@
 # Kudos to Werner Robitza, AVEQ GmbH, for helping with ffmpeg
 # related content
 
-import os
-import math
-import shutil
-import tempfile
-import random
 import hashlib
-import subprocess
 import json
+import math
+import os
+import random
+import shutil
+import subprocess
+import tempfile
 from fractions import Fraction
+
 import filetype
 from django.conf import settings
-
 
 CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -168,9 +168,7 @@ def rm_dir(directory):
 
 def url_from_path(filename):
     # TODO: find a way to preserver http - https ...
-    return "{0}{1}".format(
-        settings.MEDIA_URL, filename.replace(settings.MEDIA_ROOT, "")
-    )
+    return "{0}{1}".format(settings.MEDIA_URL, filename.replace(settings.MEDIA_ROOT, ""))
 
 
 def create_temp_file(suffix=None, dir=settings.TEMP_DIRECTORY):
@@ -210,9 +208,7 @@ def run_command(cmd, cwd=None):
         cmd = cmd.split()
     ret = {}
     if cwd:
-        process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd
-        )
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
     else:
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -351,9 +347,7 @@ def media_file_info(input_file):
         except ValueError:
             hms, msec = duration_str.split(",")
 
-        total_dur = sum(
-            int(x) * 60 ** i for i, x in enumerate(reversed(hms.split(":")))
-        )
+        total_dur = sum(int(x) * 60 ** i for i, x in enumerate(reversed(hms.split(":"))))
         video_duration = total_dur + float("0." + msec)
     else:
         # fallback to format, eg for webm
@@ -390,7 +384,7 @@ def media_file_info(input_file):
             input_file,
         ]
         stdout = run_command(cmd).get("out")
-        stream_size = sum([int(l) for l in stdout.split("\n") if l != ""])
+        stream_size = sum([int(line) for line in stdout.split("\n") if line != ""])
         video_bitrate = round((stream_size * 8 / 1024.0) / video_duration, 2)
 
     ret = {
@@ -407,7 +401,6 @@ def media_file_info(input_file):
     }
 
     if has_audio:
-        audio_duration = 1
         if "duration" in audio_info.keys():
             audio_duration = float(audio_info["duration"])
         elif "tags" in audio_info.keys() and "DURATION" in audio_info["tags"]:
@@ -416,9 +409,7 @@ def media_file_info(input_file):
                 hms, msec = duration_str.split(".")
             except ValueError:
                 hms, msec = duration_str.split(",")
-            total_dur = sum(
-                int(x) * 60 ** i for i, x in enumerate(reversed(hms.split(":")))
-            )
+            total_dur = sum(int(x) * 60 ** i for i, x in enumerate(reversed(hms.split(":"))))
             audio_duration = total_dur + float("0." + msec)
         else:
             # fallback to format, eg for webm
@@ -452,7 +443,7 @@ def media_file_info(input_file):
                 input_file,
             ]
             stdout = run_command(cmd).get("out")
-            stream_size = sum([int(l) for l in stdout.split("\n") if l != ""])
+            stream_size = sum([int(line) for line in stdout.split("\n") if line != ""])
             audio_bitrate = round((stream_size * 8 / 1024.0) / audio_duration, 2)
 
         ret.update(
@@ -680,9 +671,7 @@ def get_base_ffmpeg_command(
     return cmd
 
 
-def produce_ffmpeg_commands(
-    media_file, media_info, resolution, codec, output_filename, pass_file, chunk=False
-):
+def produce_ffmpeg_commands(media_file, media_info, resolution, codec, output_filename, pass_file, chunk=False):
     try:
         media_info = json.loads(media_info)
     except BaseException:
@@ -690,13 +679,13 @@ def produce_ffmpeg_commands(
 
     if codec == "h264":
         encoder = "libx264"
-        ext = "mp4"
+        # ext = "mp4"
     elif codec in ["h265", "hevc"]:
         encoder = "libx265"
-        ext = "mp4"
+        # ext = "mp4"
     elif codec == "vp9":
         encoder = "libvpx-vp9"
-        ext = "webm"
+        # ext = "webm"
     else:
         return False
 
@@ -719,9 +708,7 @@ def produce_ffmpeg_commands(
     #    else:
 
     # adjust the target frame rate if the input is fractional
-    target_fps = (
-        src_framerate if isinstance(src_framerate, int) else math.ceil(src_framerate)
-    )
+    target_fps = src_framerate if isinstance(src_framerate, int) else math.ceil(src_framerate)
 
     if media_info.get("video_duration") > CRF_ENCODING_NUM_SECONDS:
         enc_type = "crf"

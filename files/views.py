@@ -2,69 +2,71 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.conf import settings
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.template.defaultfilters import slugify
-from django.core.mail import EmailMessage
-from django.contrib.postgres.search import SearchQuery
-
-from rest_framework import permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.settings import api_settings
-from rest_framework.exceptions import PermissionDenied
-from rest_framework import status
-from rest_framework.parsers import (
-    JSONParser,
-    MultiPartParser,
-    FileUploadParser,
-    FormParser,
-)
 
 from celery.task.control import revoke
-from cms.permissions import IsAuthorizedToAdd, IsUserOrEditor
-from cms.permissions import user_allowed_to_upload
-from cms.custom_pagination import FastPaginationWithoutCount
-from actions.models import MediaAction, USER_MEDIA_ACTIONS
-from users.models import User
-from .helpers import produce_ffmpeg_commands, clean_query
-from .models import (
-    Media,
-    EncodeProfile,
-    Encoding,
-    Playlist,
-    PlaylistMedia,
-    Comment,
-    Category,
-    Tag,
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchQuery
+from django.core.mail import EmailMessage
+from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.template.defaultfilters import slugify
+from drf_yasg import openapi as openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import (
+    FileUploadParser,
+    FormParser,
+    JSONParser,
+    MultiPartParser,
 )
-from .forms import MediaForm, ContactForm, SubtitleForm
-from .tasks import save_user_action
+from rest_framework.response import Response
+from rest_framework.settings import api_settings
+from rest_framework.views import APIView
+
+from actions.models import USER_MEDIA_ACTIONS, MediaAction
+from cms.custom_pagination import FastPaginationWithoutCount
+from cms.permissions import IsAuthorizedToAdd, IsUserOrEditor, user_allowed_to_upload
+from users.models import User
+
+from .forms import ContactForm, MediaForm, SubtitleForm
+from .helpers import clean_query, produce_ffmpeg_commands
 from .methods import (
-    list_tasks,
     get_user_or_session,
-    show_recommended_media,
-    show_related_media,
     is_mediacms_editor,
     is_mediacms_manager,
-    update_user_ratings,
+    list_tasks,
     notify_user_on_comment,
+    show_recommended_media,
+    show_related_media,
+    update_user_ratings,
+)
+from .models import (
+    Category,
+    Comment,
+    EncodeProfile,
+    Encoding,
+    Media,
+    Playlist,
+    PlaylistMedia,
+    Tag,
 )
 from .serializers import (
-    MediaSerializer,
     CategorySerializer,
-    TagSerializer,
-    SingleMediaSerializer,
+    CommentSerializer,
     EncodeProfileSerializer,
     MediaSearchSerializer,
-    PlaylistSerializer,
+    MediaSerializer,
     PlaylistDetailSerializer,
-    CommentSerializer,
+    PlaylistSerializer,
+    SingleMediaSerializer,
+    TagSerializer,
 )
 from .stop_words import STOP_WORDS
+from .tasks import save_user_action
 
 VALID_USER_ACTIONS = [action for action, name in USER_MEDIA_ACTIONS]
 
@@ -111,11 +113,7 @@ def add_subtitle(request):
     if not media:
         return HttpResponseRedirect("/")
 
-    if not (
-        request.user == media.user
-        or is_mediacms_editor(request.user)
-        or is_mediacms_manager(request.user)
-    ):
+    if not (request.user == media.user or is_mediacms_editor(request.user) or is_mediacms_manager(request.user)):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
@@ -200,11 +198,7 @@ def edit_media(request):
     if not media:
         return HttpResponseRedirect("/")
 
-    if not (
-        request.user == media.user
-        or is_mediacms_editor(request.user)
-        or is_mediacms_manager(request.user)
-    ):
+    if not (request.user == media.user or is_mediacms_editor(request.user) or is_mediacms_manager(request.user)):
         return HttpResponseRedirect("/")
     if request.method == "POST":
         form = MediaForm(request.user, request.POST, request.FILES, instance=media)
@@ -251,8 +245,6 @@ def embed_media(request):
 
     if not media:
         return HttpResponseRedirect("/")
-
-    user_or_session = get_user_or_session(request)
 
     context = {}
     context["media"] = friendly_token
@@ -374,9 +366,7 @@ def view_media(request):
         return render(request, "cms/media.html", context)
 
     user_or_session = get_user_or_session(request)
-    save_user_action.delay(
-        user_or_session, friendly_token=friendly_token, action="watch"
-    )
+    save_user_action.delay(user_or_session, friendly_token=friendly_token, action="watch")
     context = {}
     context["media"] = friendly_token
     context["media_object"] = media
@@ -386,11 +376,7 @@ def view_media(request):
     context["CAN_DELETE_COMMENTS"] = False
 
     if request.user.is_authenticated:
-        if (
-            (media.user.id == request.user.id)
-            or is_mediacms_editor(request.user)
-            or is_mediacms_manager(request.user)
-        ):
+        if (media.user.id == request.user.id) or is_mediacms_editor(request.user) or is_mediacms_manager(request.user):
             context["CAN_DELETE_MEDIA"] = True
             context["CAN_EDIT_MEDIA"] = True
             context["CAN_DELETE_COMMENTS"] = True
@@ -414,8 +400,19 @@ class MediaList(APIView):
     """Media listings views"""
 
     permission_classes = (IsAuthorizedToAdd,)
-    parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
+    parser_classes = (MultiPartParser, FormParser, FileUploadParser)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='page', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Page number'),
+            openapi.Parameter(name='author', type=openapi.TYPE_STRING, in_=openapi.IN_QUERY, description='username'),
+            openapi.Parameter(name='show', type=openapi.TYPE_STRING, in_=openapi.IN_QUERY, description='show', enum=['recommended', 'featured', 'latest']),
+        ],
+        tags=['Media'],
+        operation_summary='List Media',
+        operation_description='Lists all media',
+        responses={200: MediaSerializer(many=True)},
+    )
     def get(self, request, format=None):
         # Show media
         params = self.request.query_params
@@ -455,6 +452,17 @@ class MediaList(APIView):
         serializer = MediaSerializer(page, many=True, context={"request": request})
         return paginator.get_paginated_response(serializer.data)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="media_file", in_=openapi.IN_FORM, type=openapi.TYPE_FILE, required=True, description="media_file"),
+            openapi.Parameter(name="description", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="description"),
+            openapi.Parameter(name="title", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="title"),
+        ],
+        tags=['Media'],
+        operation_summary='Add new Media',
+        operation_description='Adds a new media, for authenticated users',
+        responses={201: openapi.Response('response description', MediaSerializer), 401: 'bad request'},
+    )
     def post(self, request, format=None):
         # Add new media
         serializer = MediaSerializer(data=request.data, context={"request": request})
@@ -471,43 +479,40 @@ class MediaDetail(APIView):
     """
 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrEditor)
-    parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
+    parser_classes = (MultiPartParser, FormParser, FileUploadParser)
 
     def get_object(self, friendly_token, password=None):
         try:
-            media = (
-                Media.objects.select_related("user")
-                .prefetch_related("encodings__profile")
-                .get(friendly_token=friendly_token)
-            )
+            media = Media.objects.select_related("user").prefetch_related("encodings__profile").get(friendly_token=friendly_token)
 
             # this need be explicitly called, and will call
             # has_object_permission() after has_permission has succeeded
             self.check_object_permissions(self.request, media)
 
-            if media.state == "private" and not (
-                self.request.user == media.user or is_mediacms_editor(self.request.user)
-            ):
-                if (
-                    (not password)
-                    or (not media.password)
-                    or (password != media.password)
-                ):
+            if media.state == "private" and not (self.request.user == media.user or is_mediacms_editor(self.request.user)):
+                if (not password) or (not media.password) or (password != media.password):
                     return Response(
                         {"detail": "media is private"},
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
             return media
         except PermissionDenied:
-            return Response(
-                {"detail": "bad permissions"}, status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({"detail": "bad permissions"}, status=status.HTTP_401_UNAUTHORIZED)
         except BaseException:
             return Response(
                 {"detail": "media file does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='friendly_token', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='unique identifier', required=True),
+        ],
+        tags=['Media'],
+        operation_summary='Get information for Media',
+        operation_description='Get information for a media',
+        responses={200: SingleMediaSerializer(), 400: 'bad request'},
+    )
     def get(self, request, friendly_token, format=None):
         # Get media details
         password = request.GET.get("password")
@@ -520,27 +525,38 @@ class MediaDetail(APIView):
             related_media = []
         else:
             related_media = show_related_media(media, request=request, limit=100)
-            related_media_serializer = MediaSerializer(
-                related_media, many=True, context={"request": request}
-            )
+            related_media_serializer = MediaSerializer(related_media, many=True, context={"request": request})
             related_media = related_media_serializer.data
         ret = serializer.data
 
         # update rattings info with user specific ratings
         # eg user has already rated for this media
         # this only affects user rating and only if enabled
-        if (
-            settings.ALLOW_RATINGS
-            and ret.get("ratings_info")
-            and not request.user.is_anonymous
-        ):
-            ret["ratings_info"] = update_user_ratings(
-                request.user, media, ret.get("ratings_info")
-            )
+        if settings.ALLOW_RATINGS and ret.get("ratings_info") and not request.user.is_anonymous:
+            ret["ratings_info"] = update_user_ratings(request.user, media, ret.get("ratings_info"))
 
         ret["related_media"] = related_media
         return Response(ret)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='friendly_token', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='unique identifier', required=True),
+            openapi.Parameter(name='type', type=openapi.TYPE_STRING, in_=openapi.IN_FORM, description='action to perform', enum=['encode', 'review']),
+            openapi.Parameter(
+                name='encoding_profiles',
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Items(type=openapi.TYPE_STRING),
+                in_=openapi.IN_FORM,
+                description='if action to perform is encode, need to specify list of ids of encoding profiles',
+            ),
+            openapi.Parameter(name='result', type=openapi.TYPE_BOOLEAN, in_=openapi.IN_FORM, description='if action is review, this is the result (True for reviewed, False for not reviewed)'),
+        ],
+        tags=['Media'],
+        operation_summary='Run action on Media',
+        operation_description='Actions for a media, for MediaCMS editors and managers',
+        responses={201: 'action created', 400: 'bad request'},
+        operation_id='media_manager_actions',
+    )
     def post(self, request, friendly_token, format=None):
         """superuser actions
         Available only to MediaCMS editors and managers
@@ -553,14 +569,11 @@ class MediaDetail(APIView):
             return media
 
         if not (is_mediacms_editor(request.user) or is_mediacms_manager(request.user)):
-            return Response(
-                {"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         action = request.data.get("type")
         profiles_list = request.data.get("encoding_profiles")
         result = request.data.get("result", True)
-
         if action == "encode":
             # Create encoding tasks for specific profiles
             valid_profiles = []
@@ -576,44 +589,61 @@ class MediaDetail(APIView):
                         valid_profiles.append(p)
                     except ValueError:
                         return Response(
-                            {
-                                "detail": "encoding_profiles must be int or list of ints of valid encode profiles"
-                            },
+                            {"detail": "encoding_profiles must be int or list of ints of valid encode profiles"},
                             status=status.HTTP_400_BAD_REQUEST,
                         )
             media.encode(profiles=valid_profiles)
-            return Response(
-                {"detail": "media will be encoded"}, status=status.HTTP_201_CREATED
-            )
+            return Response({"detail": "media will be encoded"}, status=status.HTTP_201_CREATED)
         elif action == "review":
             if result:
                 media.is_reviewed = True
-            elif result == False:
+            elif result is False:
                 media.is_reviewed = False
             media.save(update_fields=["is_reviewed"])
-            return Response(
-                {"detail": "media reviewed set"}, status=status.HTTP_201_CREATED
-            )
+            return Response({"detail": "media reviewed set"}, status=status.HTTP_201_CREATED)
         return Response(
             {"detail": "not valid action or no action specified"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="description", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="description"),
+            openapi.Parameter(name="title", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="title"),
+            openapi.Parameter(name="media_file", in_=openapi.IN_FORM, type=openapi.TYPE_FILE, required=False, description="media_file"),
+        ],
+        tags=['Media'],
+        operation_summary='Update Media',
+        operation_description='Update a Media, for Media uploader',
+        responses={201: openapi.Response('response description', MediaSerializer), 401: 'bad request'},
+    )
     def put(self, request, friendly_token, format=None):
         # Update a media object
         media = self.get_object(friendly_token)
         if isinstance(media, Response):
             return media
 
-        serializer = MediaSerializer(
-            media, data=request.data, context={"request": request}
-        )
+        serializer = MediaSerializer(media, data=request.data, context={"request": request})
         if serializer.is_valid():
-            media_file = request.data["media_file"]
-            serializer.save(user=request.user, media_file=media_file)
+            if request.data.get('media_file'):
+                media_file = request.data["media_file"]
+                serializer.save(user=request.user, media_file=media_file)
+            else:
+                serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='friendly_token', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='unique identifier', required=True),
+        ],
+        tags=['Media'],
+        operation_summary='Delete Media',
+        operation_description='Delete a Media, for MediaCMS editors and managers',
+        responses={
+            204: 'no content',
+        },
+    )
     def delete(self, request, friendly_token, format=None):
         # Delete a media object
         media = self.get_object(friendly_token)
@@ -633,26 +663,24 @@ class MediaActions(APIView):
 
     def get_object(self, friendly_token):
         try:
-            media = (
-                Media.objects.select_related("user")
-                .prefetch_related("encodings__profile")
-                .get(friendly_token=friendly_token)
-            )
+            media = Media.objects.select_related("user").prefetch_related("encodings__profile").get(friendly_token=friendly_token)
             if media.state == "private" and self.request.user != media.user:
-                return Response(
-                    {"detail": "media is private"}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": "media is private"}, status=status.HTTP_400_BAD_REQUEST)
             return media
         except PermissionDenied:
-            return Response(
-                {"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException:
             return Response(
                 {"detail": "media file does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def get(self, request, friendly_token, format=None):
         # show date and reason for each time media was reported
         media = self.get_object(friendly_token)
@@ -668,6 +696,12 @@ class MediaActions(APIView):
 
         return Response(ret, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def post(self, request, friendly_token, format=None):
         # perform like/dislike/report actions
         media = self.get_object(friendly_token)
@@ -693,23 +727,23 @@ class MediaActions(APIView):
                 extra_info=extra,
             )
 
-            return Response(
-                {"detail": "action received"}, status=status.HTTP_201_CREATED
-            )
+            return Response({"detail": "action received"}, status=status.HTTP_201_CREATED)
         else:
-            return Response(
-                {"detail": "no action specified"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "no action specified"}, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def delete(self, request, friendly_token, format=None):
         media = self.get_object(friendly_token)
         if isinstance(media, Response):
             return media
 
         if not request.user.is_superuser:
-            return Response(
-                {"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         action = request.data.get("type")
         if action:
@@ -722,9 +756,7 @@ class MediaActions(APIView):
                     status=status.HTTP_201_CREATED,
                 )
         else:
-            return Response(
-                {"detail": "no action specified"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "no action specified"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MediaSearch(APIView):
@@ -735,6 +767,12 @@ class MediaSearch(APIView):
 
     parser_classes = (JSONParser,)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Search'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def get(self, request, format=None):
         params = self.request.query_params
         query = params.get("q", "").strip().lower()
@@ -768,11 +806,7 @@ class MediaSearch(APIView):
         if query:
             # move this processing to a prepare_query function
             query = clean_query(query)
-            q_parts = [
-                q_part.rstrip("y")
-                for q_part in query.split()
-                if q_part not in STOP_WORDS
-            ]
+            q_parts = [q_part.rstrip("y") for q_part in query.split() if q_part not in STOP_WORDS]
             if q_parts:
                 query = SearchQuery(q_parts[0] + ":*", search_type="raw")
                 for part in q_parts[1:]:
@@ -795,7 +829,7 @@ class MediaSearch(APIView):
             media = media.filter(user__username=author)
 
         if upload_date:
-            gte = lte = None
+            gte = None
             if upload_date == 'today':
                 gte = datetime.now().date()
             if upload_date == 'this_week':
@@ -803,12 +837,10 @@ class MediaSearch(APIView):
             if upload_date == 'this_month':
                 year = datetime.now().date().year
                 month = datetime.now().date().month
-                gte = datetime(year,month,1)
+                gte = datetime(year, month, 1)
             if upload_date == 'this_year':
                 year = datetime.now().date().year
-                gte = datetime(year,1,1)
-            if lte:
-                media = media.filter(add_date__lte=lte)
+                gte = datetime(year, 1, 1)
             if gte:
                 media = media.filter(add_date__gte=gte)
 
@@ -826,9 +858,7 @@ class MediaSearch(APIView):
                 pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
             paginator = pagination_class()
             page = paginator.paginate_queryset(media, request)
-            serializer = MediaSearchSerializer(
-                page, many=True, context={"request": request}
-            )
+            serializer = MediaSearchSerializer(page, many=True, context={"request": request})
             return paginator.get_paginated_response(serializer.data)
 
 
@@ -838,6 +868,15 @@ class PlaylistList(APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorizedToAdd)
     parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+        responses={
+            200: openapi.Response('response description', PlaylistSerializer(many=True)),
+        },
+    )
     def get(self, request, format=None):
         pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
         paginator = pagination_class()
@@ -852,6 +891,12 @@ class PlaylistList(APIView):
         serializer = PlaylistSerializer(page, many=True, context={"request": request})
         return paginator.get_paginated_response(serializer.data)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def post(self, request, format=None):
         serializer = PlaylistSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -872,15 +917,19 @@ class PlaylistDetail(APIView):
             self.check_object_permissions(self.request, playlist)
             return playlist
         except PermissionDenied:
-            return Response(
-                {"detail": "not enough permissions"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "not enough permissions"}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException:
             return Response(
                 {"detail": "Playlist does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def get(self, request, friendly_token, format=None):
         playlist = self.get_playlist(friendly_token)
         if isinstance(playlist, Response):
@@ -888,31 +937,37 @@ class PlaylistDetail(APIView):
 
         serializer = PlaylistDetailSerializer(playlist, context={"request": request})
 
-        playlist_media = PlaylistMedia.objects.filter(
-            playlist=playlist
-        ).prefetch_related("media__user")
+        playlist_media = PlaylistMedia.objects.filter(playlist=playlist).prefetch_related("media__user")
 
         playlist_media = [c.media for c in playlist_media]
-        playlist_media_serializer = MediaSerializer(
-            playlist_media, many=True, context={"request": request}
-        )
+        playlist_media_serializer = MediaSerializer(playlist_media, many=True, context={"request": request})
         ret = serializer.data
         ret["playlist_media"] = playlist_media_serializer.data
 
         return Response(ret)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def post(self, request, friendly_token, format=None):
         playlist = self.get_playlist(friendly_token)
         if isinstance(playlist, Response):
             return playlist
-        serializer = PlaylistDetailSerializer(
-            playlist, data=request.data, context={"request": request}
-        )
+        serializer = PlaylistDetailSerializer(playlist, data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def put(self, request, friendly_token, format=None):
         playlist = self.get_playlist(friendly_token)
         if isinstance(playlist, Response):
@@ -927,14 +982,10 @@ class PlaylistDetail(APIView):
                 pass
 
         if action in ["add", "remove", "ordering"]:
-            media = Media.objects.filter(
-                friendly_token=media_friendly_token
-            ).first()
+            media = Media.objects.filter(friendly_token=media_friendly_token).first()
             if media:
                 if action == "add":
-                    media_in_playlist = PlaylistMedia.objects.filter(
-                        playlist=playlist
-                    ).count()
+                    media_in_playlist = PlaylistMedia.objects.filter(playlist=playlist).count()
                     if media_in_playlist >= settings.MAX_MEDIA_PER_PLAYLIST:
                         return Response(
                             {"detail": "max number of media for a Playlist reached"},
@@ -952,9 +1003,7 @@ class PlaylistDetail(APIView):
                             status=status.HTTP_201_CREATED,
                         )
                 elif action == "remove":
-                    PlaylistMedia.objects.filter(
-                        playlist=playlist, media=media
-                    ).delete()
+                    PlaylistMedia.objects.filter(playlist=playlist, media=media).delete()
                     return Response(
                         {"detail": "media removed from Playlist"},
                         status=status.HTTP_201_CREATED,
@@ -967,14 +1016,18 @@ class PlaylistDetail(APIView):
                             status=status.HTTP_201_CREATED,
                         )
             else:
-                return Response(
-                    {"detail": "media is not valid"}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": "media is not valid"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(
             {"detail": "invalid or not specified action"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Playlists'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def delete(self, request, friendly_token, format=None):
         playlist = self.get_playlist(friendly_token)
         if isinstance(playlist, Response):
@@ -992,6 +1045,7 @@ class EncodingDetail(APIView):
     permission_classes = (permissions.IsAdminUser,)
     parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 
+    @swagger_auto_schema(auto_schema=None)
     def post(self, request, encoding_id):
         ret = {}
         force = request.data.get("force", False)
@@ -1024,8 +1078,8 @@ class EncodingDetail(APIView):
                     chunk=chunk,
                     chunk_file_path=chunk_file_path,
                 ).count()
-                > 1
-                and force == False
+                > 1  # noqa
+                and force is False  # noqa
             ):
                 Encoding.objects.filter(id=encoding_id).delete()
                 return Response({"status": "fail"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1045,15 +1099,11 @@ class EncodingDetail(APIView):
             if chunk:
                 original_media_path = chunk_file_path
                 original_media_md5sum = encoding.md5sum
-                original_media_url = (
-                    settings.SSL_FRONTEND_HOST + encoding.media_chunk_url
-                )
+                original_media_url = settings.SSL_FRONTEND_HOST + encoding.media_chunk_url
             else:
                 original_media_path = media.media_file.path
                 original_media_md5sum = media.md5sum
-                original_media_url = (
-                    settings.SSL_FRONTEND_HOST + media.original_media_url
-                )
+                original_media_url = settings.SSL_FRONTEND_HOST + media.original_media_url
 
             ret["original_media_url"] = original_media_url
             ret["original_media_path"] = original_media_path
@@ -1121,6 +1171,7 @@ class EncodingDetail(APIView):
                 return Response({"status": "fail"}, status=status.HTTP_400_BAD_REQUEST)
             return Response({"status": "success"}, status=status.HTTP_201_CREATED)
 
+    @swagger_auto_schema(auto_schema=None)
     def put(self, request, encoding_id, format=None):
         encoding_file = request.data["file"]
         encoding = Encoding.objects.filter(id=encoding_id).first()
@@ -1138,6 +1189,18 @@ class CommentList(APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorizedToAdd)
     parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='page', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Page number'),
+            openapi.Parameter(name='author', type=openapi.TYPE_STRING, in_=openapi.IN_QUERY, description='username'),
+        ],
+        tags=['Comments'],
+        operation_summary='Lists Comments',
+        operation_description='Paginated listing of all comments',
+        responses={
+            200: openapi.Response('response description', CommentSerializer(many=True)),
+        },
+    )
     def get(self, request, format=None):
         pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
         paginator = pagination_class()
@@ -1169,25 +1232,25 @@ class CommentDetail(APIView):
 
     def get_object(self, friendly_token):
         try:
-            media = Media.objects.select_related("user").get(
-                friendly_token=friendly_token
-            )
+            media = Media.objects.select_related("user").get(friendly_token=friendly_token)
             self.check_object_permissions(self.request, media)
             if media.state == "private" and self.request.user != media.user:
-                return Response(
-                    {"detail": "media is private"}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": "media is private"}, status=status.HTTP_400_BAD_REQUEST)
             return media
         except PermissionDenied:
-            return Response(
-                {"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException:
             return Response(
                 {"detail": "media file does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def get(self, request, friendly_token):
         # list comments for a media
         media = self.get_object(friendly_token)
@@ -1200,6 +1263,12 @@ class CommentDetail(APIView):
         serializer = CommentSerializer(page, many=True, context={"request": request})
         return paginator.get_paginated_response(serializer.data)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def delete(self, request, friendly_token, uid=None):
         """Delete a comment
         Administrators, MediaCMS editors and managers,
@@ -1213,18 +1282,18 @@ class CommentDetail(APIView):
                     {"detail": "comment does not exist"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            if (
-                (comment.user == self.request.user)
-                or comment.media.user == self.request.user
-                or is_mediacms_editor(self.request.user)
-            ):
+            if (comment.user == self.request.user) or comment.media.user == self.request.user or is_mediacms_editor(self.request.user):
                 comment.delete()
             else:
-                return Response(
-                    {"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": "bad permissions"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Media'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def post(self, request, friendly_token):
         """Create a comment"""
         media = self.get_object(friendly_token)
@@ -1249,17 +1318,19 @@ class CommentDetail(APIView):
 class UserActions(APIView):
     parser_classes = (JSONParser,)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='action', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='action', required=True, enum=VALID_USER_ACTIONS),
+        ],
+        tags=['Users'],
+        operation_summary='List user actions',
+        operation_description='Lists user actions',
+    )
     def get(self, request, action):
         media = []
         if action in VALID_USER_ACTIONS:
             if request.user.is_authenticated:
-                media = (
-                    Media.objects.select_related("user")
-                    .filter(
-                        mediaactions__user=request.user, mediaactions__action=action
-                    )
-                    .order_by("-mediaactions__action_date")
-                )
+                media = Media.objects.select_related("user").filter(mediaactions__user=request.user, mediaactions__action=action).order_by("-mediaactions__action_date")
             elif request.session.session_key:
                 media = (
                     Media.objects.select_related("user")
@@ -1280,11 +1351,18 @@ class UserActions(APIView):
 class CategoryList(APIView):
     """List categories"""
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Categories'],
+        operation_summary='Lists Categories',
+        operation_description='Lists all categories',
+        responses={
+            200: openapi.Response('response description', CategorySerializer),
+        },
+    )
     def get(self, request, format=None):
         categories = Category.objects.filter().order_by("title")
-        serializer = CategorySerializer(
-            categories, many=True, context={"request": request}
-        )
+        serializer = CategorySerializer(categories, many=True, context={"request": request})
         ret = serializer.data
         return Response(ret)
 
@@ -1292,6 +1370,17 @@ class CategoryList(APIView):
 class TagList(APIView):
     """List tags"""
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='page', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Page number'),
+        ],
+        tags=['Tags'],
+        operation_summary='Lists Tags',
+        operation_description='Paginated listing of all tags',
+        responses={
+            200: openapi.Response('response description', TagSerializer),
+        },
+    )
     def get(self, request, format=None):
         tags = Tag.objects.filter().order_by("-media_count")
         pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
@@ -1304,16 +1393,23 @@ class TagList(APIView):
 class EncodeProfileList(APIView):
     """List encode profiles"""
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Encoding Profiles'],
+        operation_summary='List Encoding Profiles',
+        operation_description='Lists all encoding profiles for videos',
+        responses={200: EncodeProfileSerializer(many=True)},
+    )
     def get(self, request, format=None):
         profiles = EncodeProfile.objects.all()
-        serializer = EncodeProfileSerializer(
-            profiles, many=True, context={"request": request}
-        )
+        serializer = EncodeProfileSerializer(profiles, many=True, context={"request": request})
         return Response(serializer.data)
 
 
 class TasksList(APIView):
     """List tasks"""
+
+    swagger_schema = None
 
     permission_classes = (permissions.IsAdminUser,)
 
@@ -1324,6 +1420,8 @@ class TasksList(APIView):
 
 class TaskDetail(APIView):
     """Cancel a task"""
+
+    swagger_schema = None
 
     permission_classes = (permissions.IsAdminUser,)
 

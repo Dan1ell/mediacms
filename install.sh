@@ -1,5 +1,5 @@
 #!/bin/bash
-# should be run as root and only on Ubuntu 18/20 versions!
+# should be run as root and only on Ubuntu 18/20, Debian Buster versions!
 echo "Welcome to the MediacMS installation!";
 
 if [ `id -u` -ne 0 ]
@@ -25,6 +25,10 @@ if [[ `lsb_release -d` == *"Ubuntu 20"* ]]; then
     echo 'Performing system update and dependency installation, this will take a few minutes'
     apt-get update && apt-get -y upgrade && apt install python3-venv python3-dev virtualenv redis-server postgresql nginx git gcc vim unzip ffmpeg imagemagick python3-certbot-nginx certbot wget -y
 elif [[ `lsb_release -d`  = *"Ubuntu 18"* ]]; then
+    echo 'Performing system update and dependency installation, this will take a few minutes'
+    apt-get update && apt-get -y upgrade && apt install python3-venv python3-dev virtualenv redis-server postgresql nginx git gcc vim unzip ffmpeg imagemagick python3-certbot-nginx certbot wget -y
+# added check for Debian 10 (buster)
+elif [[ `lsb_release -d` == *"buster"* ]]; then
     echo 'Performing system update and dependency installation, this will take a few minutes'
     apt-get update && apt-get -y upgrade && apt install python3-venv python3-dev virtualenv redis-server postgresql nginx git gcc vim unzip ffmpeg imagemagick python3-certbot-nginx certbot wget -y
 else
@@ -89,10 +93,16 @@ cp deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service &&
 
 mkdir -p /etc/letsencrypt/live/mediacms.io/
 mkdir -p /etc/letsencrypt/live/$FRONTEND_HOST
+mkdir -p /etc/nginx/sites-enabled
+mkdir -p /etc/nginx/sites-available
+mkdir -p /etc/nginx/dhparams/
+rm -rf /etc/nginx/conf.d/default.conf
+rm -rf /etc/nginx/sites-enabled/default
 cp deploy/local_install/mediacms.io_fullchain.pem /etc/letsencrypt/live/$FRONTEND_HOST/fullchain.pem
 cp deploy/local_install/mediacms.io_privkey.pem /etc/letsencrypt/live/$FRONTEND_HOST/privkey.pem
-cp deploy/local_install/mediacms.io /etc/nginx/sites-available/default
-cp deploy/local_install/mediacms.io /etc/nginx/sites-enabled/default
+cp deploy/local_install/dhparams.pem /etc/nginx/dhparams/dhparams.pem
+cp deploy/local_install/mediacms.io /etc/nginx/sites-available/mediacms.io
+ln -s /etc/nginx/sites-available/mediacms.io /etc/nginx/sites-enabled/mediacms.io
 cp deploy/local_install/uwsgi_params /etc/nginx/sites-enabled/uwsgi_params
 cp deploy/local_install/nginx.conf /etc/nginx/
 systemctl stop nginx
@@ -111,6 +121,14 @@ else
     echo "will not call certbot utility to update ssl certificate for url 'localhost', using default ssl certificate"
 fi
 
+# Generate individual DH params
+if [ "$FRONTEND_HOST" != "localhost" ]; then
+    # Only generate new DH params when using "real" certificates.
+    openssl dhparam -out /etc/nginx/dhparams/dhparams.pem 4096
+    systemctl restart nginx
+else
+    echo "will not generate new DH params for url 'localhost', using default DH params"
+fi
 
 # Bento4 utility installation, for HLS
 

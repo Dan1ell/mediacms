@@ -1,27 +1,29 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
-from django.conf import settings
-
-from rest_framework import permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.settings import api_settings
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from drf_yasg import openapi as openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
-from rest_framework import status
 from rest_framework.parsers import (
-    JSONParser,
-    MultiPartParser,
     FileUploadParser,
     FormParser,
+    JSONParser,
+    MultiPartParser,
 )
-from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.settings import api_settings
+from rest_framework.views import APIView
+
 from cms.permissions import IsUserOrManager
-from files.methods import is_mediacms_manager, is_mediacms_editor
-from .models import User, Channel
-from .forms import UserForm, ChannelForm
-from .serializers import UserSerializer, UserDetailSerializer
+from files.methods import is_mediacms_editor, is_mediacms_manager
+
+from .forms import ChannelForm, UserForm
+from .models import Channel, User
+from .serializers import UserDetailSerializer, UserSerializer
 
 
 def get_user(username):
@@ -38,15 +40,9 @@ def view_user(request, username):
     if not user:
         return HttpResponseRedirect("/members")
     context["user"] = user
-    context["CAN_EDIT"] = (
-        True
-        if ((user and user == request.user) or is_mediacms_manager(request.user))
-        else False
-    )
+    context["CAN_EDIT"] = True if ((user and user == request.user) or is_mediacms_manager(request.user)) else False
     context["CAN_DELETE"] = True if is_mediacms_manager(request.user) else False
-    context["SHOW_CONTACT_FORM"] = (
-        True if (user.allow_contact or is_mediacms_editor(request.user)) else False
-    )
+    context["SHOW_CONTACT_FORM"] = True if (user.allow_contact or is_mediacms_editor(request.user)) else False
     return render(request, "cms/user.html", context)
 
 
@@ -57,15 +53,9 @@ def view_user_media(request, username):
         return HttpResponseRedirect("/members")
 
     context["user"] = user
-    context["CAN_EDIT"] = (
-        True
-        if ((user and user == request.user) or is_mediacms_manager(request.user))
-        else False
-    )
+    context["CAN_EDIT"] = True if ((user and user == request.user) or is_mediacms_manager(request.user)) else False
     context["CAN_DELETE"] = True if is_mediacms_manager(request.user) else False
-    context["SHOW_CONTACT_FORM"] = (
-        True if (user.allow_contact or is_mediacms_editor(request.user)) else False
-    )
+    context["SHOW_CONTACT_FORM"] = True if (user.allow_contact or is_mediacms_editor(request.user)) else False
     return render(request, "cms/user_media.html", context)
 
 
@@ -76,15 +66,9 @@ def view_user_playlists(request, username):
         return HttpResponseRedirect("/members")
 
     context["user"] = user
-    context["CAN_EDIT"] = (
-        True
-        if ((user and user == request.user) or is_mediacms_manager(request.user))
-        else False
-    )
+    context["CAN_EDIT"] = True if ((user and user == request.user) or is_mediacms_manager(request.user)) else False
     context["CAN_DELETE"] = True if is_mediacms_manager(request.user) else False
-    context["SHOW_CONTACT_FORM"] = (
-        True if (user.allow_contact or is_mediacms_editor(request.user)) else False
-    )
+    context["SHOW_CONTACT_FORM"] = True if (user.allow_contact or is_mediacms_editor(request.user)) else False
 
     return render(request, "cms/user_playlists.html", context)
 
@@ -96,15 +80,9 @@ def view_user_about(request, username):
         return HttpResponseRedirect("/members")
 
     context["user"] = user
-    context["CAN_EDIT"] = (
-        True
-        if ((user and user == request.user) or is_mediacms_manager(request.user))
-        else False
-    )
+    context["CAN_EDIT"] = True if ((user and user == request.user) or is_mediacms_manager(request.user)) else False
     context["CAN_DELETE"] = True if is_mediacms_manager(request.user) else False
-    context["SHOW_CONTACT_FORM"] = (
-        True if (user.allow_contact or is_mediacms_editor(request.user)) else False
-    )
+    context["SHOW_CONTACT_FORM"] = True if (user.allow_contact or is_mediacms_editor(request.user)) else False
 
     return render(request, "cms/user_about.html", context)
 
@@ -134,20 +112,14 @@ def view_channel(request, friendly_token):
     else:
         user = channel.user
     context["user"] = user
-    context["CAN_EDIT"] = (
-        True
-        if ((user and user == request.user) or is_mediacms_manager(request.user))
-        else False
-    )
+    context["CAN_EDIT"] = True if ((user and user == request.user) or is_mediacms_manager(request.user)) else False
     return render(request, "cms/channel.html", context)
 
 
 @login_required
 def edit_channel(request, friendly_token):
     channel = Channel.objects.filter(friendly_token=friendly_token).first()
-    if not (
-        channel and request.user.is_authenticated and (request.user == channel.user)
-    ):
+    if not (channel and request.user.is_authenticated and (request.user == channel.user)):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
@@ -161,6 +133,13 @@ def edit_channel(request, friendly_token):
     return render(request, "cms/channel_edit.html", {"form": form})
 
 
+@swagger_auto_schema(
+    methods=['post'],
+    manual_parameters=[],
+    tags=['Users'],
+    operation_summary='Contact user',
+    operation_description='Contact user through email, if user has set this option',
+)
 @api_view(["POST"])
 def contact_user(request, username):
     if not request.user.is_authenticated:
@@ -170,7 +149,6 @@ def contact_user(request, username):
         )
     user = User.objects.filter(username=username).first()
     if user and (user.allow_contact or is_mediacms_editor(request.user)):
-        subject = request.data.get("subject")
         from_email = request.user.email
         subject = f"[{settings.PORTAL_NAME}] - Message from {from_email}"
         body = request.data.get("body")
@@ -197,9 +175,18 @@ Sender email: %s\n
 
 
 class UserList(APIView):
+
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='page', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Page number'),
+        ],
+        tags=['Users'],
+        operation_summary='List users',
+        operation_description='Paginated listing of users',
+    )
     def get(self, request, format=None):
         pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
         paginator = pagination_class()
@@ -218,7 +205,7 @@ class UserDetail(APIView):
     """"""
 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrManager)
-    parser_classes = (JSONParser, MultiPartParser, FormParser, FileUploadParser)
+    parser_classes = (MultiPartParser, FormParser, FileUploadParser)
 
     def get_user(self, username):
         try:
@@ -228,14 +215,18 @@ class UserDetail(APIView):
             self.check_object_permissions(self.request, user)
             return user
         except PermissionDenied:
-            return Response(
-                {"detail": "not enough permissions"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "not enough permissions"}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response(
-                {"detail": "user does not exist"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name='username', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='username', required=True),
+        ],
+        tags=['Users'],
+        operation_summary='List user details',
+        operation_description='Get user details',
+    )
     def get(self, request, username, format=None):
         # Get user details
         user = self.get_user(username)
@@ -245,15 +236,25 @@ class UserDetail(APIView):
         serializer = UserDetailSerializer(user, context={"request": request})
         return Response(serializer.data)
 
-    def post(self, request, uid, format=None):
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="logo", in_=openapi.IN_FORM, type=openapi.TYPE_FILE, required=True, description="logo"),
+            openapi.Parameter(name="description", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="description"),
+            openapi.Parameter(name="name", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=False, description="name"),
+            openapi.Parameter(name='username', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='username', required=True),
+        ],
+        tags=['Users'],
+        operation_summary='Edit user details',
+        operation_description='Post user details - authenticated view',
+        responses={201: openapi.Response('response description', UserDetailSerializer), 400: 'bad request'},
+    )
+    def post(self, request, username, format=None):
         # USER
-        user = self.get_user(uid)
+        user = self.get_user(username)
         if isinstance(user, Response):
             return user
 
-        serializer = UserDetailSerializer(
-            user, data=request.data, context={"request": request}
-        )
+        serializer = UserDetailSerializer(user, data=request.data, context={"request": request})
         if serializer.is_valid():
             logo = request.data.get("logo")
             if logo:
@@ -264,6 +265,12 @@ class UserDetail(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Users'],
+        operation_summary='Xto_be_written',
+        operation_description='to_be_written',
+    )
     def put(self, request, uid, format=None):
         # ADMIN
         user = self.get_user(uid)
@@ -271,9 +278,7 @@ class UserDetail(APIView):
             return user
 
         if not request.user.is_superuser:
-            return Response(
-                {"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "not allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         action = request.data.get("action")
         if action == "feature":
@@ -286,6 +291,12 @@ class UserDetail(APIView):
         serializer = UserDetailSerializer(user, context={"request": request})
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Users'],
+        operation_summary='to_be_written',
+        operation_description='to_be_written',
+    )
     def delete(self, request, username, format=None):
         # Delete a user
         user = self.get_user(username)

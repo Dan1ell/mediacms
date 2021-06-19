@@ -1,4 +1,5 @@
 import os
+
 from celery.schedules import crontab
 
 DEBUG = False
@@ -17,7 +18,7 @@ CAN_ADD_MEDIA = "all"
 PORTAL_WORKFLOW = "public"
 
 # valid values: 'light', 'dark'.
-DEFAULT_THEME = "light"  
+DEFAULT_THEME = "light"
 
 
 # These are passed on every request
@@ -213,9 +214,7 @@ POST_UPLOAD_AUTHOR_MESSAGE_UNLISTED_NO_COMMENTARY = ""
 CANNOT_ADD_MEDIA_MESSAGE = ""
 
 # mp4hls command, part of Bendo4
-MP4HLS_COMMAND = (
-    "/home/mediacms.io/mediacms/Bento4-SDK-1-6-0-637.x86_64-unknown-linux/bin/mp4hls"
-)
+MP4HLS_COMMAND = "/home/mediacms.io/mediacms/Bento4-SDK-1-6-0-637.x86_64-unknown-linux/bin/mp4hls"
 
 # highly experimental, related with remote workers
 ADMIN_TOKEN = "c2b8e1838b6128asd333ddc5e24"
@@ -293,6 +292,7 @@ INSTALLED_APPS = [
     "uploader.apps.UploaderConfig",
     "djcelery_email",
     "ckeditor",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -349,6 +349,16 @@ FILE_UPLOAD_HANDLERS = [
 
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
+error_filename = os.path.join(LOGS_DIR, "debug.log")
+if not os.path.exists(LOGS_DIR):
+    try:
+        os.mkdir(LOGS_DIR)
+    except PermissionError:
+        pass
+
+if not os.path.isfile(error_filename):
+    open(error_filename, 'a').close()
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -356,7 +366,7 @@ LOGGING = {
         "file": {
             "level": "ERROR",
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOGS_DIR, "debug.log"),
+            "filename": error_filename,
         },
     },
     "loggers": {
@@ -424,11 +434,16 @@ CELERY_BEAT_SCHEDULE = {
 # TODO: beat, delete chunks from media root
 # chunks_dir after xx days...(also uploads_dir)
 
+
 LOCAL_INSTALL = False
+
+# this is an option to make the whole portal available to logged in users only
+# it is placed here so it can be overrided on local_settings.py
+GLOBAL_LOGIN_REQUIRED = False
 
 try:
     # keep a local_settings.py file for local overrides
-    from .local_settings import *
+    from .local_settings import *  # noqa
 
     # ALLOWED_HOSTS needs a url/ip
     ALLOWED_HOSTS.append(FRONTEND_HOST.replace("http://", "").replace("https://", ""))
@@ -445,3 +460,12 @@ if LOCAL_INSTALL:
     SSL_FRONTEND_HOST = FRONTEND_HOST.replace("http", "https")
 else:
     SSL_FRONTEND_HOST = FRONTEND_HOST
+
+if GLOBAL_LOGIN_REQUIRED:
+    # this should go after the AuthenticationMiddleware middleware
+    MIDDLEWARE.insert(5, "login_required.middleware.LoginRequiredMiddleware")
+    LOGIN_REQUIRED_IGNORE_PATHS = [
+        r'/accounts/login/$',
+        r'/accounts/logout/$',
+        r'/accounts/signup/$',
+    ]
