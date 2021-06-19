@@ -40,8 +40,9 @@ pylint
 pep8
 django-silk
 django-debug-toolbar
+pre-commit
+pytest-django
 
 # custom packages
 geocoder
-pre-commit
-pytest-django
+
